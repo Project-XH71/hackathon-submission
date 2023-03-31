@@ -1,0 +1,16 @@
+service: aws-intelhub-backend-api
+frameworkVersion: '3'
+# useDotenv: true
+# plugins:
+#   - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ap-south-1
+
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - httpApi: '*'

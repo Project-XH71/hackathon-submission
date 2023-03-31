@@ -1,0 +1,95 @@
+{
+    "module":{
+        "Database Optimization":[{
+            "name":"DB Instance Metric Connections Hourly",
+            "query":"steampipe query 'select * from aws.aws_rds_db_instance_metric_connections_hourly' --output json"
+        },{
+            "name":"DB Instance Metric Connections Daily",
+            "query": "steampipe query 'select * from aws.aws_rds_db_instance_metric_connections_daily' --output json" 
+        },{
+            "name":"DB Instance Metric CPU Utilization Hourly",
+            "query":"steampipe query 'select * from aws.aws_rds_db_instance_metric_cpu_utilization_hourly' --output json"
+        },{
+            "name":"DB Instance Metric CPU Utilization Daily",
+            "query":"steampipe query 'select * from aws.aws_rds_db_instance_metric_cpu_utilization_daily' --output json"
+        },{
+            "name":"DB Instance Metric Read Input-Output per second Hourly"
+            "query":"steampipe query 'select * from aws.aws_rds_db_instance_metric_read_iops_hourly' --output json"
+        },{
+            "name":"DB Instance Metric Read Input-Output per second Daily"
+            "query":"steampipe query 'select * from aws.aws_rds_db_instance_metric_read_iops_daily' --output json"
+        },{
+            "name":"DB Instance Metric Write Input-Output per second Hourly"
+            "query":"steampipe query 'select * from aws.aws_rds_db_instance_metric_write_iops_hourly' --output json"
+        },{
+            "name":"DB Instance Metric Write Input-Output per second Daily"
+            "query":"steampipe query 'select * from aws.aws_rds_db_instance_metric_write_iops_daily' --output json"
+        }]
+    },{
+        "Computation Analysis":[{
+            "name":"EC2 Instance Metric CPU Utilization Hourly",
+            "query":"steampipe query 'select * from aws.aws_ec2_instance_metric_connections_hourly' --output json"
+        },{
+            "name":"First 20 entries EC2 Instance Metric CPU Utilization Hourly",
+            "query":"steampipe query 'select * from aws.aws_ec2_instance_metric_connections_hourly order by timestamp limit 20' --output json"
+        },{
+            "name":"Average EC2 Instance Metric CPU Utilization Hourly",
+            "query":"steampipe query 'select sum(average*sample_count)/sum(sample_count) from aws.aws_ec2_instance_metric_connections_hourly' --output json"
+        },{
+            "name":"Total EC2 Instance Metric CPU Utilization Hourly",
+            "query":"steampipe query 'select sum(average*sample_count) from aws.aws_ec2_instance_metric_connections_hourly' --output json"
+        },{
+            "name":"More than Average EC2 Instance Metric CPU Utilization Hourly",
+            "query":"steampipe query 'select * from aws.aws_ec2_instance_metric_connections_hourly where average>(select sum(average*sample_count)/sum(sample_count) from aws.aws_ec2_instance_metric_connections_hourly)' --output json"
+        },{
+            "name":"EC2 Instance Metric CPU Utilization Daily",
+            "query": "steampipe query 'select * from aws.aws_ec2_instance_metric_connections_daily' --output json" 
+        },{
+            "name":"EC2 Application Load Balancer Metric Request Count Daily",
+            "query":"steampipe query 'select * from aws.aws_application_load_balancer_metric_request_count_daily' --output json"
+        },{
+            "name":"EC2 Network Load Balancer Metric Net Flow Count Daily",
+            "query": "steampipe query 'select * from aws.aws_ec2_network_load_balancer_metric_net_flow_count_daily' --output json"
+        }]
+    },{
+         "Cost Analysis":[{
+            "name":"Cost By Account Daily",
+            "query":"steampipe query 'select * from aws.aws_cost_by_account_daily' --output json"
+        },{
+            "name":"Cost By Account Monthly",
+            "query":"steampipe query 'select * from aws.aws_cost_by_account_monthly' --output json"
+        },{
+            "name":"Cost By Record Type Daily",
+            "query":"steampipe query 'select * from aws.aws_cost_by_record_type_daily' --output json"
+        },{
+            "name":"Cost By Record Type Monthly",
+            "query":"steampipe query 'select * from aws.aws_cost_by_record_type_monthly' --output json"
+        },{
+            "name":"Cost By Service Daily",
+            "query":"steampipe query 'select * from aws.aws_cost_by_service_daily' --output json"
+        },{
+            "name":"Cost By Service Monthly",
+            "query":"steampipe query 'select * from aws.aws_cost_by_service_monthly' --output json"
+        },{
+            "name":"Cost By Service Usage Type Daily",
+            "query":"steampipe query 'select * from aws.aws_cost_by_usage_type_daily' --output json"
+        },{
+            "name":"Cost By Service Usage Type Monthly",
+            "query":"steampipe query 'select * from aws.aws_cost_by_usage_type_monthly' --output json"
+        },{
+            "name":"Cost By Forecast Daily",
+            "query":"steampipe query 'select * from aws.aws_cost_by_forecast_daily' --output json"
+        },{
+            "name":"Cost By Forecast Monthly",
+            "query":"steampipe query 'select * from aws.aws_cost_by_forecast_monthly' --output json"
+        }]
+    },{
+        "Current Status":[{
+            "name":"Service Quota",
+            "query":"steampipe query 'select * from aws_servicequotas_service_quota' --output json"
+        },{
+            "name":"Default Service Quota",
+            "query":"steampipe query 'select * from aws_servicequotas_default_service_quota' --output json"
+        }]
+    }
+}

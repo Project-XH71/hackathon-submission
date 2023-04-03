@@ -15,5 +15,9 @@ router.get('/', verifySession() ,async(req,res) => {
 router.post('/assign', verifySession() ,controller.assignVpaToUser);
 
 
+// Get VPA of User
+router.post('/fetch', verifySession() ,controller.getVpa);
+
+
 
 module.exports = router;

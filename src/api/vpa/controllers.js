@@ -33,3 +33,22 @@ module.exports.assignVpaToUser = async(req,res) => {
         throw error;
     }
 }
+
+
+module.exports.getVpa = async(req,res) => {
+    try {
+        const { userId } = req.session;
+        const user_vpa = await prisma.user_vpa.findMany({
+            where:{
+                userId: userId
+            },
+            include:{
+                user: true
+            }
+        })
+
+        return res.status(200).send(user_vpa)
+    } catch (error) {
+        throw error;
+    }
+}

@@ -13,6 +13,8 @@ model user {
   name      String
   createdAt DateTime   @default(now()) @db.Timestamptz(6)
   updatedAt DateTime   @default(now()) @db.Timestamptz(6)
+  doctor    doctor?
+  patient   patient?
   user_vpa  user_vpa[]
 }
 
@@ -27,9 +29,66 @@ model user_vpa {
   @@unique([userId, vpa])
 }
 
-model hospital {
+model doctor {
+  id            String          @id @default(dbgenerated("gen_random_uuid()"))
+  userId        String          @unique
+  metadata      Json
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime        @default(now()) @db.Timestamptz(6)
+  user          user            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  doctor_visits doctor_visits[]
+}
+
+model doctor_visits {
   id        String   @id
+  doctorId  String
+  patientId String
+  visitId   String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  doctor    doctor   @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patient   patient  @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  visits    visits   @relation(fields: [visitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model medical_case {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  patientId String
+  data      String?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  patient   patient  @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  visits    visits[]
+}
+
+model medical_center {
+  id        String   @id(map: "hospital_pkey")
   name      String
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  type      String?
+  pinCode   String?
+  city      String?
+  state     String?
+}
+
+model patient {
+  id            String          @id @default(dbgenerated("gen_random_uuid()"))
+  userId        String          @unique
+  metadata      Json
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime        @default(now()) @db.Timestamptz(6)
+  doctor_visits doctor_visits[]
+  medical_case  medical_case[]
+  user          user            @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model visits {
+  id            String          @id
+  metadata      Json?
+  medicalCaseId String
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime        @default(now()) @db.Timestamptz(6)
+  doctor_visits doctor_visits[]
+  medical_case  medical_case    @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

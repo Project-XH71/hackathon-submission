@@ -8,20 +8,20 @@ datasource db {
 }
 
 model user {
-  id        String     @id
-  email     String     @unique
+  id        String    @id
+  email     String    @unique
   name      String
-  createdAt DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime   @default(now()) @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @default(now()) @db.Timestamptz(6)
   doctor    doctor?
   patient   patient?
-  user_vpa  user_vpa[]
+  user_vpa  user_vpa?
 }
 
 model user_vpa {
   id        String   @id
   vpa       String   @unique
-  userId    String
+  userId    String   @unique
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -30,13 +30,14 @@ model user_vpa {
 }
 
 model doctor {
-  id            String          @id @default(dbgenerated("gen_random_uuid()"))
-  userId        String          @unique
-  metadata      Json
-  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime        @default(now()) @db.Timestamptz(6)
-  user          user            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  doctor_visits doctor_visits[]
+  id                           String                         @id @default(dbgenerated("gen_random_uuid()"))
+  userId                       String                         @unique
+  metadata                     Json?
+  createdAt                    DateTime                       @default(now()) @db.Timestamptz(6)
+  updatedAt                    DateTime                       @default(now()) @db.Timestamptz(6)
+  backend_pat_doc_verification backend_pat_doc_verification[]
+  user                         user                           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  doctor_visits                doctor_visits[]
 }
 
 model doctor_visits {
@@ -73,14 +74,15 @@ model medical_center {
 }
 
 model patient {
-  id            String          @id @default(dbgenerated("gen_random_uuid()"))
-  userId        String          @unique
-  metadata      Json
-  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime        @default(now()) @db.Timestamptz(6)
-  doctor_visits doctor_visits[]
-  medical_case  medical_case[]
-  user          user            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                           String                         @id @default(dbgenerated("gen_random_uuid()"))
+  userId                       String                         @unique
+  metadata                     Json?
+  createdAt                    DateTime                       @default(now()) @db.Timestamptz(6)
+  updatedAt                    DateTime                       @default(now()) @db.Timestamptz(6)
+  backend_pat_doc_verification backend_pat_doc_verification[]
+  doctor_visits                doctor_visits[]
+  medical_case                 medical_case[]
+  user                         user                           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model visits {
@@ -91,4 +93,16 @@ model visits {
   updatedAt     DateTime        @default(now()) @db.Timestamptz(6)
   doctor_visits doctor_visits[]
   medical_case  medical_case    @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model backend_pat_doc_verification {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  patientId String
+  doctorId  String
+  otp       Decimal  @db.Decimal
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  status    String?
+  doctor    doctor   @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patient   patient  @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

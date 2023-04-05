@@ -49,7 +49,19 @@
         "/*":{
             "scopes":{
                 "GET": ["user-get"],
-                "POST":[]
+                "POST":["root"]
+            }
+        }
+    },
+    "/medical-case":{
+        "scopes":{
+            "GET": [],
+            "POST":[]
+        },
+        "/*":{
+            "scopes":{
+                "GET": ["user-get"],
+                "POST":["root","doctor"]
             }
         }
     },

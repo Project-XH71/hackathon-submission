@@ -1,6 +1,7 @@
 const UserRoles = require("supertokens-node/recipe/userroles");
 const prisma = require("../../primsaInit.js");
-
+const UserMetadata = require("supertokens-node/recipe/usermetadata");
+ 
 
 module.exports.createRole = async(req,res) => {
 
@@ -54,4 +55,37 @@ module.exports.getAllUsersThatHaveRole = async(req,res) => {
     //     }
     // }
     return res.status(200).send(response);
+}
+
+
+module.exports.assignUserDoctor = async(req,res) => {
+    try {
+        const { userId, userIds } = req.body;
+
+        if(userIds && userIds.length > 0){}
+        
+        const newDoctor = await prisma.doctor.upsert({
+            where:{
+                userId: userId
+            },
+            create:{
+                user:{
+                    connect:{
+                        id: userId
+                    }
+                },
+            },
+            update:{},
+            include:{
+                user: true
+            }
+        })
+
+        await UserMetadata.updateUserMetadata(userId, {doctorId: newDoctor.id})
+        await UserRoles.addRoleToUser(userId, "doctor")
+
+        return res.status(200).send(newDoctor);
+    } catch (error) {
+        return res.status(500).send({error: error.message})
+    }
 }

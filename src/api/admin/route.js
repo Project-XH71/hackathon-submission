@@ -14,6 +14,11 @@ router.post('/role/assign', verifySession(), rbac(), controller.assignRole);
 
 router.post('/role/get-all-users', verifySession(), rbac(), controller.getAllUsersThatHaveRole);
 
+
+
+
+router.post('/user/assign_doctor',verifySession(),rbac(),controller.assignUserDoctor);
+
 // router.post('/role/get-all-users', verifySession(), rbac.auth("admin"), controller.getAllUsersThatHaveRole);
 
 

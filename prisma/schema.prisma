@@ -41,7 +41,7 @@ model doctor {
 }
 
 model doctor_visits {
-  id        String   @id
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   doctorId  String
   patientId String
   visitId   String
@@ -54,11 +54,9 @@ model doctor_visits {
 
 model medical_case {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
-  patientId String
   data      String?
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
-  patient   patient  @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   visits    visits[]
 }
 
@@ -81,12 +79,11 @@ model patient {
   updatedAt                    DateTime                       @default(now()) @db.Timestamptz(6)
   backend_pat_doc_verification backend_pat_doc_verification[]
   doctor_visits                doctor_visits[]
-  medical_case                 medical_case[]
   user                         user                           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model visits {
-  id            String          @id
+  id            String          @id @default(dbgenerated("gen_random_uuid()"))
   metadata      Json?
   medicalCaseId String
   createdAt     DateTime        @default(now()) @db.Timestamptz(6)
@@ -105,4 +102,13 @@ model backend_pat_doc_verification {
   status    String?
   doctor    doctor   @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   patient   patient  @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model backend_escrow {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  key       String   @unique
+  value     String?
+  metadata  Json?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
 }

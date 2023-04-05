@@ -49,6 +49,7 @@ app.use("/admin", require("./api/admin/route"));
 // app.use("/aws/benchmark", require("./api/aws/benchmark.route.js"));
 app.use("/vpa",require("./api/vpa/routes.js"));
 app.use("/patient",require("./api/patient/routes.js"));
+app.use("/medical-case",require("./api/medical_case/routes.js"));
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

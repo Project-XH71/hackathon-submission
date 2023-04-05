@@ -67,7 +67,10 @@ module.exports = {
                                     data:{
                                         id,
                                         email,
-                                        name: "Unknown"
+                                        name: "Unknown",
+                                        patient:{
+                                            create:{}
+                                        }
                                     }
                                 })
                                 // // These are the input form fields values that the user used while signing up

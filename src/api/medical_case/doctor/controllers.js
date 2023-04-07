@@ -52,7 +52,30 @@ module.exports.createMedicalCaseByDoctor = async(req,res) => {
     }
 }
 
-module.exports.getUserMedicalVisits
+module.exports.getListOfUserMedicalVisits = async(req,res) => {
+    try {
+        const {doctorId} = (await UserMetadata.getUserMetadata(req.session.getUserId())).metadata;
+        
+        const visitData = await prisma.visits.findMany({
+            where:{
+                doctor_visits:{
+                     every:{
+                        doctorId: doctorId
+                     }
+                },   
+            },
+            select:{
+                medical_case: true
+            }
+        })
+
+        return res.status(200).send(visitData);
+
+
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}
 
 // module.exports.updateVisits = async(req,res) => {
 //     try {
@@ -62,4 +85,67 @@ module.exports.getUserMedicalVisits
 //     }
 // }
 
+module.exports.addDignosesbyDoctor = async(req,res) => {
+    try {
+        const { medicalCaseId, diagnoses, diagnoseAt  } = req.body;
+        // const {doctorId} = (await UserMetadata.getUserMetadata(req.session.getUserId())).metadata;
+
+        const diagnosis = await prisma.diagnoses.create({
+            data:{
+                medical_case:{
+                    connect:{
+                        id: medicalCaseId
+                    }
+                },
+                diagnoses,
+                diagnoseAt: diagnoseAt || new Date()
+            }
+        });
+
+        return res.status(200).send(diagnosis);
+
+
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}
+
+module.exports.updateDignosesbyDoctor = async(req,res) => {
+    try {
+        const { medicalCaseId, diagnoses, diagnoseAt, diagnoseId  } = req.body;
+        const {doctorId} = (await UserMetadata.getUserMetadata(req.session.getUserId())).metadata;
+
+        const diagnosis = await prisma.diagnoses.update({
+            where:{
+                id: diagnoseId
+            },
+            data:{
+                diagnoses,
+                diagnoseAt: diagnoseAt || undefined        
+            }
+        });
+        return res.status(200).send(diagnosis);
+
+
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}
+
+module.exports.deleteDignosesbyDoctor = async(req,res) => {
+    try {
+        const { medicalCaseId, diagnoseId  } = req.body;
+        const {doctorId} = (await UserMetadata.getUserMetadata(req.session.getUserId())).metadata;
+
+        const diagnosis = await prisma.diagnoses.delete({
+            where:{
+                id: diagnoseId
+            }
+        });
+        return res.status(200).send(diagnosis);
+    }
+    catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}
 

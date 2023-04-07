@@ -53,10 +53,11 @@ model doctor_visits {
 }
 
 model medical_case {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String      @id @default(dbgenerated("gen_random_uuid()"))
   data      String?
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  createdAt DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime    @default(now()) @db.Timestamptz(6)
+  diagnoses diagnoses[]
   visits    visits[]
 }
 
@@ -83,13 +84,14 @@ model patient {
 }
 
 model visits {
-  id            String          @id @default(dbgenerated("gen_random_uuid()"))
-  metadata      Json?
-  medicalCaseId String
-  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime        @default(now()) @db.Timestamptz(6)
-  doctor_visits doctor_visits[]
-  medical_case  medical_case    @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id               String             @id @default(dbgenerated("gen_random_uuid()"))
+  metadata         Json?
+  medicalCaseId    String
+  createdAt        DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime           @default(now()) @db.Timestamptz(6)
+  diagnoses_visits diagnoses_visits[]
+  doctor_visits    doctor_visits[]
+  medical_case     medical_case       @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model backend_pat_doc_verification {
@@ -111,4 +113,26 @@ model backend_escrow {
   metadata  Json?
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model diagnoses {
+  id               String             @id @default(dbgenerated("gen_random_uuid()"))
+  medicalCaseId    String
+  diagnoses        String?
+  diagnoseAt       DateTime?          @db.Timestamptz(6)
+  createdAt        DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime           @default(now()) @db.Timestamptz(6)
+  medical_case     medical_case       @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  diagnoses_visits diagnoses_visits[]
+}
+
+model diagnoses_visits {
+  visitId     String
+  diagnosesId String
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
+  diagnoses   diagnoses @relation(fields: [diagnosesId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  visits      visits    @relation(fields: [visitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([visitId, diagnosesId])
 }

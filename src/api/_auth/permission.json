@@ -58,6 +58,33 @@
             "GET": [],
             "POST":[]
         },
+        "/doctor":{
+            "scopes":{
+                "GET": ["doctor"],
+                "POST":["doctor"]
+            },
+            "/diagnosis":{
+                "scopes":{
+                    "GET": [],
+                    "POST":[]
+                },
+                "/*":{
+                    "scopes":{
+                        "GET": ["doctor"],
+                        "POST":["doctor"],
+                        "PUT":["doctor"],
+                        "DELETE":["doctor"],
+                        "PATCH":["doctor"]
+                    }
+                }
+            },
+            "/*":{
+                "scopes":{
+                    "GET": ["user-get"],
+                    "POST":["root","doctor"]
+                }
+            }
+        },
         "/*":{
             "scopes":{
                 "GET": ["user-get"],
@@ -80,6 +107,12 @@
         "scopes":{
             "GET": ["student-get"],
             "POST":["student-create"]
+        },
+        "/*":{
+            "scopes":{
+                "GET": ["student-get"],
+                "POST":["root","student-create"]
+            }
         }
     }
 }

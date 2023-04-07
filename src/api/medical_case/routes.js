@@ -4,6 +4,7 @@ const controller = require('./controllers.js');
 const { verifySession } = require("supertokens-node/recipe/session/framework/express");
 const rbac = require("../_auth/rbac.js");
 
+router.use("/doctor", require("./doctor/routes.js"));
 
 // Route Status Check
 router.get('/', verifySession() ,async(req,res) => {
@@ -13,7 +14,7 @@ router.get('/', verifySession() ,async(req,res) => {
 //-----------------Medical Case----------------//
 
 // Assign Patient to User
-router.post('/create/doctor-visit', verifySession(), rbac() ,controller.createMedicalCaseByDoctor);
+// router.post('/create/doctor-visit', verifySession(), rbac() ,controller.);
 
 
 

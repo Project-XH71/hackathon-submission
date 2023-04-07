@@ -87,8 +87,11 @@
         },
         "/*":{
             "scopes":{
-                "GET": ["user-get"],
-                "POST":["root","doctor"]
+                "GET": ["root"],
+                "POST":["root","doctor"],
+                "PUT":["root","doctor"],
+                "DELETE":["root","doctor"],
+                "PATCH":["root","doctor"]
             }
         }
     },

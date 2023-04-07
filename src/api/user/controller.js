@@ -2,6 +2,8 @@ const { verifySession } = require("supertokens-node/recipe/session/framework/exp
 const UserMetadata = require("supertokens-node/recipe/usermetadata");
 const { v4: uuidv4 } = require('uuid');
 
+const _secure = require("../_secure");
+
 const prisma = require("../../primsaInit");
 
 module.exports.update = async (req, res) => {
@@ -33,4 +35,36 @@ module.exports.info = async(req,res) => {
     const auth = await UserMetadata.getUserMetadata(userId)
 
     return res.status(200).send({user,auth});
+}
+
+module.exports.updateUserMetadata = async(req,res) => {
+    try {
+        const { phoneNumber, dateOfBirth, address } = req.body;
+        
+        const userMetadata = await prisma.user_metadata.upsert({
+            where:{
+                userId: req.session.getUserId()
+            },
+            update:{
+                address,
+                dateOfBirth: new Date(dateOfBirth),
+                phoneNumber
+            },
+            create:{
+                userId: req.session.getUserId(),
+                address,
+                dateOfBirth: new Date(dateOfBirth), 
+                phoneNumber
+            },
+            include:{
+                user: true
+            }
+        })
+
+        return res.send(userMetadata);
+
+
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
 }

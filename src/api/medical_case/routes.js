@@ -16,7 +16,7 @@ router.get('/', verifySession() ,async(req,res) => {
 // Assign Patient to User
 // router.post('/create/doctor-visit', verifySession(), rbac() ,controller.);
 
-
+router.patch('/data/update', verifySession(), rbac() ,controller.updateMedicalCaseData);
 
 
 

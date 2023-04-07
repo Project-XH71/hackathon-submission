@@ -8,14 +8,15 @@ datasource db {
 }
 
 model user {
-  id        String    @id
-  email     String    @unique
-  name      String
-  createdAt DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime  @default(now()) @db.Timestamptz(6)
-  doctor    doctor?
-  patient   patient?
-  user_vpa  user_vpa?
+  id            String         @id
+  email         String         @unique
+  name          String
+  createdAt     DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime       @default(now()) @db.Timestamptz(6)
+  doctor        doctor?
+  patient       patient?
+  user_metadata user_metadata?
+  user_vpa      user_vpa?
 }
 
 model user_vpa {
@@ -49,7 +50,7 @@ model doctor_visits {
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
   doctor    doctor   @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   patient   patient  @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  visits    visits   @relation(fields: [visitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  visits    visits   @relation(fields: [visitId], references: [id], onDelete: Cascade)
 }
 
 model medical_case {
@@ -93,7 +94,7 @@ model visits {
   diagnoses_visits   diagnoses_visits[]
   doctor_visits      doctor_visits[]
   lab_reports_visits lab_reports_visits[]
-  medical_case       medical_case         @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  medical_case       medical_case         @relation(fields: [medicalCaseId], references: [id], onDelete: Cascade)
 }
 
 model backend_pat_doc_verification {
@@ -111,10 +112,11 @@ model backend_pat_doc_verification {
 model backend_escrow {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
   key       String   @unique
-  value     String?
+  secretKey String?  @unique
   metadata  Json?
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
+  secretVI  String   @unique
 }
 
 model diagnoses {
@@ -145,7 +147,7 @@ model lab_report {
   medicalCaseId      String
   createdAt          DateTime             @default(now()) @db.Timestamp(6)
   updatedAt          DateTime             @default(now()) @db.Timestamp(6)
-  medical_case       medical_case         @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  medical_case       medical_case         @relation(fields: [medicalCaseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   lab_reports_visits lab_reports_visits[]
 }
 
@@ -158,4 +160,15 @@ model lab_reports_visits {
   visits      visits     @relation(fields: [visitsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([labReportId, visitsId])
+}
+
+model user_metadata {
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
+  userId      String    @unique
+  phoneNumber String?   @unique
+  dateOfBirth DateTime? @db.Date
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime  @default(now()) @db.Timestamp(6)
+  address     String?
+  user        user      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

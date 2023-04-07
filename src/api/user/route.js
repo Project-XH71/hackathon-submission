@@ -14,6 +14,9 @@ router.post('/update', verifySession(), controller.update);
 router.post('/info', verifySession(), controller.info);
 
 
+// User Update Metadata
+router.patch("/metadata", verifySession(), controller.updateUserMetadata);
+
 
 
 

@@ -1,11 +1,14 @@
 const prisma = require("../../../primsaInit.js");
 const { v4: uuidv4 } = require('uuid');
 const UserMetadata = require("supertokens-node/recipe/usermetadata");
+const _secure = require("../../_secure");
 
 module.exports.createMedicalCaseByDoctor = async(req,res) => {
     try {
         const {doctorId} = (await UserMetadata.getUserMetadata(req.session.getUserId())).metadata;
         const { patientVpa } = req.body;
+
+        const transaction = await prisma.$transaction();
 
         const pvData = await prisma.user_vpa.findUnique({
             where:{

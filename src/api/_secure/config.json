@@ -1,0 +1,5 @@
+{
+    "SECRET_KEY":"ebd1e380cd9b8bb2c368c1d15dd9ffd66aa05836c72332d5c6def17ded3bde6b",
+    "SECRET_IV":"secretIV",
+    "ENCRYPTION_METHOD":"aes-256-cbc"
+}

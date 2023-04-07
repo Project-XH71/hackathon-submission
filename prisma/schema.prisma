@@ -53,12 +53,13 @@ model doctor_visits {
 }
 
 model medical_case {
-  id        String      @id @default(dbgenerated("gen_random_uuid()"))
-  data      String?
-  createdAt DateTime    @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime    @default(now()) @db.Timestamptz(6)
-  diagnoses diagnoses[]
-  visits    visits[]
+  id         String       @id @default(dbgenerated("gen_random_uuid()"))
+  data       String?
+  createdAt  DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime     @default(now()) @db.Timestamptz(6)
+  diagnoses  diagnoses[]
+  lab_report lab_report[]
+  visits     visits[]
 }
 
 model medical_center {
@@ -84,14 +85,15 @@ model patient {
 }
 
 model visits {
-  id               String             @id @default(dbgenerated("gen_random_uuid()"))
-  metadata         Json?
-  medicalCaseId    String
-  createdAt        DateTime           @default(now()) @db.Timestamptz(6)
-  updatedAt        DateTime           @default(now()) @db.Timestamptz(6)
-  diagnoses_visits diagnoses_visits[]
-  doctor_visits    doctor_visits[]
-  medical_case     medical_case       @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                 String               @id @default(dbgenerated("gen_random_uuid()"))
+  metadata           Json?
+  medicalCaseId      String
+  createdAt          DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime             @default(now()) @db.Timestamptz(6)
+  diagnoses_visits   diagnoses_visits[]
+  doctor_visits      doctor_visits[]
+  lab_reports_visits lab_reports_visits[]
+  medical_case       medical_case         @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model backend_pat_doc_verification {
@@ -135,4 +137,25 @@ model diagnoses_visits {
   visits      visits    @relation(fields: [visitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([visitId, diagnosesId])
+}
+
+model lab_report {
+  id                 String               @id
+  data               String
+  medicalCaseId      String
+  createdAt          DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime             @default(now()) @db.Timestamp(6)
+  medical_case       medical_case         @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lab_reports_visits lab_reports_visits[]
+}
+
+model lab_reports_visits {
+  labReportId String
+  visitsId    String
+  createdAt   DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime   @default(now()) @db.Timestamptz(6)
+  lab_report  lab_report @relation(fields: [labReportId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  visits      visits     @relation(fields: [visitsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([labReportId, visitsId])
 }

@@ -101,3 +101,10 @@ const UserMetadata = require("supertokens-node/recipe/usermetadata");
 
 
 
+module.exports.createLabReport = async(req,res) => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}

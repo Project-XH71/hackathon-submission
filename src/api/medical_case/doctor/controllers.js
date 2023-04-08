@@ -3,21 +3,51 @@ const { v4: uuidv4 } = require('uuid');
 const UserMetadata = require("supertokens-node/recipe/usermetadata");
 const _secure = require("../../_secure");
 
+const ageCalculator = (dob) => {
+    const ageDifMs = Date.now() - birthday.getTime();
+    const ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
 module.exports.createMedicalCaseByDoctor = async(req,res) => {
+    const transaction = await prisma.$transaction();
     try {
         const {doctorId} = (await UserMetadata.getUserMetadata(req.session.getUserId())).metadata;
         const { patientVpa } = req.body;
 
-        const transaction = await prisma.$transaction();
+        // -> Retrve Patient Metadata, Userdata and VPA Data
+        // -> Create Medical Case Data with Patient Metadata
+        // -> Encrypt Medical Case Data
+        // -> Store Medical Case Data in Medical Case Table
+        // -> Store Secret Key in Backend Escrow Table
+
+
 
         const pvData = await prisma.user_vpa.findUnique({
             where:{
                 vpa: patientVpa
             },
-            select:{
-                userId: true
+            include:{
+                user: {
+                    include:{
+                        user_metadata: true
+                    }
+                }
             }
         })
+
+        const medicalCaseData = {
+            dob: (pvData.user.user_metadata.dob),
+            weight: 0,
+            height: 0,
+            bmi: 0,
+            patientName: pvData.user.name,
+            patientVpa: pvData.vpa,
+            age: ageCalculator(pvData.user.user_metadata.dateOfBirth)
+        }
+
+        const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(medicalCaseData));
+
 
         const visit = await prisma.visits.create({
             data:{
@@ -37,7 +67,7 @@ module.exports.createMedicalCaseByDoctor = async(req,res) => {
                 },
                 medical_case:{
                     create:{
-                        data: "No Data"
+                        data: cipher,
                     }
                 },
             },
@@ -46,12 +76,20 @@ module.exports.createMedicalCaseByDoctor = async(req,res) => {
                 medical_case: true
             }
         })
+        
+        await prisma.backend_escrow.create({
+            data:{
+                key: visit.medicalCaseId,
+                secretKey: secretKey,
+                secretVI: secretVI
+            }
+        }, transaction);
 
-        return res.send(visit);
+        return res.send({...visit, medical_case:{data: medicalCaseData}});
 
 
     } catch (error) {
-        return res.status(200).send()
+        return res.status(200).send({message: error.message})
     }
 }
 

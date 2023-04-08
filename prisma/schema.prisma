@@ -58,8 +58,10 @@ model medical_case {
   data       String?
   createdAt  DateTime     @default(now()) @db.Timestamptz(6)
   updatedAt  DateTime     @default(now()) @db.Timestamptz(6)
+  patientId  String
   diagnoses  diagnoses[]
   lab_report lab_report[]
+  patient    patient      @relation(fields: [patientId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   visits     visits[]
 }
 
@@ -82,6 +84,7 @@ model patient {
   updatedAt                    DateTime                       @default(now()) @db.Timestamptz(6)
   backend_pat_doc_verification backend_pat_doc_verification[]
   doctor_visits                doctor_visits[]
+  medical_case                 medical_case[]
   user                         user                           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -142,7 +145,7 @@ model diagnoses_visits {
 }
 
 model lab_report {
-  id                 String               @id
+  id                 String               @id @default(dbgenerated("gen_random_uuid()"))
   data               String
   medicalCaseId      String
   createdAt          DateTime             @default(now()) @db.Timestamp(6)

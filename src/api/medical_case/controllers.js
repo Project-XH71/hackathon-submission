@@ -101,6 +101,13 @@ const _secure = require("../_secure");
 // }
 
 
+const ageCalculator = (dob) => {
+    const ageDifMs = Date.now() - birthday.getTime();
+    const ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
+
 
 module.exports.updateMedicalCaseData = async(req,res) => {
     try {
@@ -164,19 +171,96 @@ module.exports.updateMedicalCaseData = async(req,res) => {
     }
 }
 
-module.exports.createLabReport = async(req,res) => {
-    try {
-        
-    } catch (error) {
-        return res.status(500).send({message: error.message});
-    }
-}
+
 
 module.exports.createLabReport = async(req,res) => {
+
+    const transaction = await prisma.$transaction();
     try {
+        const { medicalCaseid, labReportData } = req.body;
+
+
+        // -> Get Medical Case Data Secret Keys
+        // -> Get Medical Case Data
+        // -> Get User Metadata (Contains Birthdate)
+        // -> Decrypt Medical Case Data (Contains Weight and Height of the User)
+        // -> Calculate BMI
+        // -> Add these Data to the Lab Report Data
+        // -> Append the Lab Report Data from Request Body
+        // -> Encrypt the Lab Report Data
+        // -> Save the Secret key to the Backend Escrow Table
+        // -> Save the Lab Report Data to the Medical Case Table
+
+
+        const medicalCaseSecretKey = await prisma.backend_escrow.findUnique({
+            where:{
+                key: medicalCaseid
+            }
+        },transaction);
+         
+        const getMedicalCase = await prisma.medical_case.findUnique({
+            where:{
+                id: medicalCaseid
+            },
+            include:{
+                patient:{
+                    include:{
+                        user: {
+                            include:{
+                                user_metadata: true,
+                                user_vpa: true
+                            },
+                        }
+                    }
+                }
+            }
+        },transaction);
+
+        const { dateOfBirth } = getMedicalCase.patient.user.user_metadata;
         
+        
+        const decryptMedicalCaseData = _secure.decryption.decryptData(JSON.stringify(getMedicalCase.data), medicalCaseSecretKey.secretKey, medicalCaseSecretKey.secretVI);
+
+        const { weight, height } = decryptMedicalCaseData;
+
+        const labReportDataFinal = { ...labReportData, bmi: weight / (height * height), dateOfBirth: dateOfBirth,age: ageCalculator(dateOfBirth) , patientName: getMedicalCase.patient.user.name, patientVpa: getMedicalCase.patient.user.user_vpa.vpa };
+
+        const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(labReportDataFinal));
+
+        const labReport = await prisma.lab_report.create({
+            data:{
+                data: cipher,
+                medical_case:{
+                    connect:{
+                        id: getMedicalCase.id
+                    }
+                }
+            }
+        }, transaction)
+
+        await prisma.backend_escrow.upsert({
+            where:{
+                key: labReport.id 
+            },
+            create:{
+                key: labReport.id,
+                secretKey: secretKey,
+                secretVI: secretVI
+            },
+            update:{
+                secretKey: secretKey,
+                secretVI: secretVI
+            }
+        }, transaction)
+
+        await transaction.commit();
+
+        return res.send({message: "Lab Report Created", labReport: { ...labReport, data: labReportDataFinal }});
+
+
     } catch (error) {
-        return res,status(500).send({message: error.message});
+        await transaction.rollback();
+        return res.status(500).send({message: error.message});
     }
 }
 

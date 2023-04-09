@@ -18,6 +18,9 @@ router.get('/', verifySession() ,async(req,res) => {
 
 router.patch('/data/update', verifySession(), rbac() ,controller.updateMedicalCaseData);
 
+router.get('/data', verifySession(), rbac(false), controller.getMedicalCaseData);
+
+router.delete('/data', verifySession(), rbac(false) ,controller.deleteMedicalCase);
 
 
 module.exports = router;

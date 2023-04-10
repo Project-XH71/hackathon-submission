@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Routes,
   Route,
@@ -78,12 +78,20 @@ import TooltipPage from './pages/component/TooltipPage';
 import AccordionPage from './pages/component/AccordionPage';
 import IconsPage from './pages/component/IconsPage';
 
+import DashboardHome from './pages/Dashboard_Home';
+
+import SuperTokensRequest from 'supertokens-website';
+import axios from "axios";
+SuperTokensRequest.addAxiosInterceptors(axios);
 
 // import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
 import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 import SuperTokens, { SuperTokensWrapper, getSuperTokensRoutesForReactRouterDom,  } from "supertokens-auth-react";
 import { SessionAuth } from "supertokens-auth-react/recipe/session";
+
+
+// import { ReferenceDataContext, ReferenceDataContextProvider } from "./context/ReferenceDataContext"
 
 
 SuperTokens.init({
@@ -118,6 +126,7 @@ SuperTokens.init({
 function App() {
 
   const location = useLocation();
+  const { user, setUser } = useContext(ReferenceDataContext);
 
   useEffect(() => {
     document.querySelector('html').style.scrollBehavior = 'auto'
@@ -125,6 +134,12 @@ function App() {
     document.querySelector('html').style.scrollBehavior = ''
   }, [location.pathname]); // triggered on route change
 
+  useEffect(() => {
+    axios.post("/user/info")
+    .then(response => response.data)
+    .then(setUser)
+    // .finally()
+  },[axios,setUser]);
   return (
     <>
       <SuperTokensWrapper>
@@ -132,6 +147,9 @@ function App() {
             {getSuperTokensRoutesForReactRouterDom(reactRouterDom)}
             <Route exact path="/" element={
               <SessionAuth><Dashboard /></SessionAuth> 
+            } />
+            <Route exact path="/dashboard/home" element={
+              <SessionAuth><DashboardHome /></SessionAuth>
             } />
             <Route path="/dashboard/analytics" element={<Analytics />} />
             <Route path="/dashboard/fintech" element={<Fintech />} />

@@ -1,4 +1,4 @@
-const prisma = require("../../primsaInit.js");
+const prisma = require("../../../primsaInit.js");
 const { v4: uuidv4 } = require('uuid');
 const UserMetadata = require("supertokens-node/recipe/usermetadata");
 const _secure = require("../_secure");
@@ -108,133 +108,9 @@ const ageCalculator = (dob) => {
 }
 
 
-
-
-
-module.exports.updateMedicalCaseData = async(req,res) => {
-    let updatedData;
-    try {
-        const { data, medicalCaseid } = req.body;
-        // const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(data));
-
-        const updatedDataX = await prisma.$transaction(async (transaction) => {
-            // Get Old Medical Case Data
-            const getMedicalCase = await transaction.medical_case.findUnique({
-                where:{
-                    id: medicalCaseid
-                }
-            });
-
-            // Get Old Secret Key
-            const getSecretKey = await transaction.backend_escrow.findUnique({
-                where:{
-                    key: getMedicalCase.id
-                }
-            });
-
-            // Decrypt Old Medical Case Data
-            const decryptData = _secure.decryption.decryptData(getMedicalCase.data, getSecretKey.secretKey, getSecretKey.secretVI);
-
-            // Update Medical Case Data
-            updatedData = {...JSON.parse(decryptData), ...data};
-
-            // Encrypt New Medical Case Data
-            const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(updatedData));
-
-            // Update Medical Case Data
-            const x = await transaction.medical_case.update({
-                where:{
-                    id: getMedicalCase.id
-                },
-                data:{
-                    data: cipher
-                }
-            });
-
-            // Update Secret Key
-            await transaction.backend_escrow.update({
-                where:{
-                    id: getSecretKey.id
-                },
-                data:{
-                    secretKey: secretKey,
-                    secretVI: secretVI
-                }
-            });
-
-            return x;
-        });
-
-        return res.send({...updatedDataX, data: updatedData});
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({message: error.message});
-    }
-}
-
-module.exports.getMedicalCaseData = async(req,res) => {
-    try {
-        const { medicalCaseId } = req.body;
-
-        const secretKeyData = await prisma.backend_escrow.findUnique({
-            where:{
-                key: medicalCaseId
-            }
-        });
-
-        const medicalCase = await prisma.medical_case.findUnique({
-            where:{
-                id: medicalCaseId
-            }
-        });
-        
-
-        const decryptData = _secure.decryption.decryptData(medicalCase.data, secretKeyData.secretKey, secretKeyData.secretVI);
-
-
-        return res.send({ ...medicalCase,  data: JSON.parse(decryptData)});
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({message: error.message});
-    }
-}
-
-module.exports.deleteMedicalCase = async(req,res) => {
-    try {
-        const { medicalCaseId } = req.body;
-
-        const deletedData = await prisma.$transaction(async (transaction) => {
-         
-            // Delete Medical Case
-            const deleteMedicalCase = await transaction.medical_case.delete({
-                where: {
-                    id: medicalCaseId
-                }
-            });
-
-            // Delete Secret Key
-            await transaction.backend_escrow.delete({
-                where: {
-                    key: medicalCaseId
-                }
-            });
-
-            return deleteMedicalCase;
-        });
-
-        return res.send({...deletedData, message:"Medical History Deleted"});
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({message: error.message});
-    }
-}
-
-
-
 module.exports.createLabReport = async(req,res) => {
 
-    const transaction = await prisma.$transaction();
+    let labReportDataFinal;
     try {
         const { medicalCaseid, labReportData } = req.body;
 
@@ -248,85 +124,202 @@ module.exports.createLabReport = async(req,res) => {
         // -> Append the Lab Report Data from Request Body
         // -> Encrypt the Lab Report Data
         // -> Save the Secret key to the Backend Escrow Table
-        // -> Save the Lab Report Data to the Medical Case Table
+        // -> Save the Lab Report Data to the Medical Case Tabl
 
 
+        const labReport = await prisma.$transaction(async(transaction) => {
+            // -> Get Medical Case Data Secret Keys
+            const medicalCaseSecretKey = await prisma.backend_escrow.findUnique({
+                where:{
+                    key: medicalCaseid
+                }
+            });
+            
 
-        // -> Get Medical Case Data Secret Keys
-        const medicalCaseSecretKey = await prisma.backend_escrow.findUnique({
-            where:{
-                key: medicalCaseid
-            }
-        },transaction);
-         
-
-        // -> Get Medical Case Data
-        const getMedicalCase = await prisma.medical_case.findUnique({
-            where:{
-                id: medicalCaseid
-            },
-            include:{
-                patient:{
-                    include:{
-                        user: {
-                            include:{
-                                user_metadata: true,
-                                user_vpa: true
-                            },
+            // -> Get Medical Case Data
+            const getMedicalCase = await prisma.medical_case.findUnique({
+                where:{
+                    id: medicalCaseid
+                },
+                include:{
+                    patient:{
+                        include:{
+                            user: {
+                                include:{
+                                    user_metadata: true,
+                                    user_vpa: true
+                                },
+                            }
                         }
                     }
                 }
-            }
-        },transaction);
+            });
 
 
-        // -> Get User Metadata (Contains Birthdate)
-        const { dateOfBirth } = getMedicalCase.patient.user.user_metadata;
-        
+            // -> Get User Metadata (Contains Birthdate)
+            const { dateOfBirth } = getMedicalCase.patient.user.user_metadata;
+            
 
-        // -> Decrypt Medical Case Data (Contains Weight and Height of the User)
-        const decryptMedicalCaseData = _secure.decryption.decryptData(JSON.stringify(getMedicalCase.data), medicalCaseSecretKey.secretKey, medicalCaseSecretKey.secretVI);
+            // -> Decrypt Medical Case Data (Contains Weight and Height of the User)
+            const decryptMedicalCaseData = _secure.decryption.decryptData(JSON.stringify(getMedicalCase.data), medicalCaseSecretKey.secretKey, medicalCaseSecretKey.secretVI);
 
 
-        const { weight, height } = decryptMedicalCaseData;
+            const { weight, height } = decryptMedicalCaseData;
 
-        const labReportDataFinal = { ...labReportData, bmi: weight / (height * height), dateOfBirth: dateOfBirth,age: ageCalculator(dateOfBirth) , patientName: getMedicalCase.patient.user.name, patientVpa: getMedicalCase.patient.user.user_vpa.vpa };
+            labReportDataFinal = { ...labReportData, bmi: weight / (height * height), dateOfBirth: dateOfBirth,age: ageCalculator(dateOfBirth) , patientName: getMedicalCase.patient.user.name, patientVpa: getMedicalCase.patient.user.user_vpa.vpa };
 
-        const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(labReportDataFinal));
+            const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(labReportDataFinal));
 
-        const labReport = await prisma.lab_report.create({
-            data:{
-                data: cipher,
-                medical_case:{
-                    connect:{
-                        id: getMedicalCase.id
+            const labReport = await prisma.lab_report.create({
+                data:{
+                    data: cipher,
+                    medical_case:{
+                        connect:{
+                            id: getMedicalCase.id
+                        }
                     }
                 }
-            }
-        }, transaction)
+            })
 
-        await prisma.backend_escrow.upsert({
-            where:{
-                key: labReport.id 
-            },
-            create:{
-                key: labReport.id,
-                secretKey: secretKey,
-                secretVI: secretVI
-            },
-            update:{
-                secretKey: secretKey,
-                secretVI: secretVI
-            }
-        }, transaction)
+            await prisma.backend_escrow.upsert({
+                where:{
+                    key: labReport.id 
+                },
+                create:{
+                    key: labReport.id,
+                    secretKey: secretKey,
+                    secretVI: secretVI
+                },
+                update:{
+                    secretKey: secretKey,
+                    secretVI: secretVI
+                }
+            })
+
+            return labReport
+        })
+        
+
+        
 
         await transaction.commit();
 
-        return res.send({message: "Lab Report Created", labReport: { ...labReport, data: labReportDataFinal }});
+        return res.send({...labReport, data: labReportDataFinal });
 
 
     } catch (error) {
         await transaction.rollback();
+        return res.status(500).send({message: error.message});
+    }
+}
+
+
+module.exports.updateLabReport = async(req,res) => {
+
+    let labReportDataFinal;
+    try {
+        const { medicalCaseid, labReportData } = req.body;
+
+
+        // -> Get Medical Case Data Secret Keys
+        // -> Get Medical Case Data
+        // -> Decrypt Medical Case Data (Contains Weight and Height of the User)
+        // -> Append the Lab Report Data from Request Body
+        // -> Encrypt the Lab Report Data
+        // -> Save the Secret key to the Backend Escrow Table
+        // -> Save the Lab Report Data to the Medical Case Tabl
+
+
+        const labReport = await prisma.$transaction(async(transaction) => {
+            // -> Get Medical Case Data Secret Keys
+            const medicalCaseSecretKey = await transaction.backend_escrow.findUnique({
+                where:{
+                    key: medicalCaseid
+                }
+            });
+            
+
+            // -> Get Medical Case Data
+            const getMedicalCase = await transaction.medical_case.findUnique({
+                where:{
+                    id: medicalCaseid
+                }
+            });
+
+
+            
+            
+
+            // -> Decrypt Medical Case Data (Contains Weight and Height of the User)
+            const decryptMedicalCaseData = _secure.decryption.decryptData(getMedicalCase.data, medicalCaseSecretKey.secretKey, medicalCaseSecretKey.secretVI);
+
+            labReportDataFinal = { ...labReportData, ...JSON.parse(decryptMedicalCaseData)};
+
+            const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(labReportDataFinal));
+
+            const labReport = await transaction.lab_report.create({
+                data:{
+                    data: cipher,
+                    medical_case:{
+                        connect:{
+                            id: getMedicalCase.id
+                        }
+                    }
+                }
+            })
+
+            await transaction.backend_escrow.update({
+                where:{
+                    key: labReport.id 
+                },
+                update:{
+                    secretKey: secretKey,
+                    secretVI: secretVI
+                }
+            })
+
+            return labReport
+        })
+        
+
+        
+
+        await transaction.commit();
+
+        return res.send({...labReport, data: labReportDataFinal });
+
+
+    } catch (error) {
+        await transaction.rollback();
+        return res.status(500).send({message: error.message});
+    }
+}
+
+
+module.exports.deleteLabReport = async(req,res) => {
+    try {
+        const { labReportId } = req.body;
+        
+        const labReport = await prisma.$transaction(async(transaction) => {
+            const labReportData = await transaction.lab_report.delete({
+                where:{
+                    id: labReportId
+                }
+            });
+
+            await transaction.backend_escrow.delete({
+                where: {
+                    key: labReportId
+                }
+            })
+
+            return labReportData
+        })
+
+        return res.send(labReport);
+
+    } catch (error) {
+        console.log(error);
         return res.status(500).send({message: error.message});
     }
 }

@@ -2,7 +2,7 @@
   "name": "mosaic-react",
   "version": "0.1.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "export API_URL='http://localhost:5000'&& vite",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -16,6 +16,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-flatpickr": "^3.10.13",
+    "react-loader-spinner": "^5.3.4",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.3.0",
     "react-transition-group": "^4.4.2",

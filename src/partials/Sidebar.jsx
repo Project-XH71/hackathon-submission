@@ -33,9 +33,16 @@ const SidebarConfiguration = [
       },
       {
         "op":"sub_link",
-        "title":"Dashboard",
-        "path":"dashboard",
+        "title":"Medical Center",
+        "path":"case",
+        "to":"/case/list"
       },
+      {
+        "op":"sub_link",
+        "title":"Medical Case",
+        "path":"case",
+        "to":"/case/edit/:id"
+      }
     ]
   }
 ]
@@ -243,7 +250,7 @@ function Sidebar({
                           <li key={sub_index} className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${pathname.includes(`${sub_element.path}`) && 'bg-slate-900'}`}>
                               <NavLink
                                 end
-                                to="/messages"
+                                to={sub_element.to}
                                 className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
                                   pathname.includes(`${sub_element.path}`) && 'hover:text-slate-200'
                                 }`}

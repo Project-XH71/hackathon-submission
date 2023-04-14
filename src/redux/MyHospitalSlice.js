@@ -3,30 +3,30 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Async thunk for fetching user data from API
-export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {
-  const response = await axios.post(`${config.BASE_URL}/user/info`);
+export const fetchHospital = createAsyncThunk('hospital/fetchHospital', async (userId) => {
+  const response = await axios.get(`${config.BASE_URL}/medical-case/doctor/myhospital`);
   return response.data;
 });
 
 // User slice
-const userSlice = createSlice({
-  name: 'user',
+const hospitalSlice = createSlice({
+  name: 'hospital',
   initialState: { data: null, loading: false, error: null },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUser.pending, (state) => {
+      .addCase(fetchHospital.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUser.fulfilled, (state, action) => {
+      .addCase(fetchHospital.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
       })
-      .addCase(fetchUser.rejected, (state, action) => {
+      .addCase(fetchHospital.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
   },
 });
 
-export default userSlice.reducer;
+export default hospitalSlice.reducer;

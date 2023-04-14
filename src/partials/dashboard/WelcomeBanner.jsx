@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WelcomeBanner() {
+function WelcomeBanner({user}) {
   const welcomeTypes = ['Good morning', 'Good afternoon', 'Good evening'];
   const hour = new Date().getHours();
   let welcomeText = '';
@@ -54,7 +54,7 @@ function WelcomeBanner() {
 
       {/* Content */}
       <div className="relative">
-        <h1 className="text-2xl md:text-3xl text-slate-800 font-bold mb-1">{welcomeText}, Acme Inc. 👋</h1>
+        <h1 className="text-2xl md:text-3xl text-slate-800 font-bold mb-1">{welcomeText}, {user.data.user.name} 👋</h1>
         <p>Here is what’s happening with your projects today:</p>
       </div>
 

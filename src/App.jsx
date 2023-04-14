@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , lazy, Suspense} from 'react';
 import {
   Routes,
   Route,
@@ -78,7 +78,13 @@ import TooltipPage from './pages/component/TooltipPage';
 import AccordionPage from './pages/component/AccordionPage';
 import IconsPage from './pages/component/IconsPage';
 
-import DashboardHome from './pages/Dashboard_Home';
+
+
+
+// import DashboardHome from './pages/Dashboard_Home';
+const DashboardHome = lazy(() => import('./pages/Dashboard_Home'));
+
+import MedicalCaseList from './pages/medical_center/MedicalCaseList';
 
 import SuperTokensRequest from 'supertokens-website';
 import axios from "axios";
@@ -92,8 +98,12 @@ import { SessionAuth } from "supertokens-auth-react/recipe/session";
 
 
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from "./redux/UserSlice";
+import { fetchHospital } from "./redux/MyHospitalSlice";
 
-
+import { ProgressBar } from "react-loader-spinner";
+import LoaderPage from './utils/LoadingPage1';
+import CaseEditing from "./pages/medical_case/CaseEditing"
 // import { ReferenceDataContext, ReferenceDataContextProvider } from "./context/ReferenceDataContext"
 
 
@@ -125,11 +135,26 @@ SuperTokens.init({
     ]
 });
 
+// const LoaderPage = () => {
+//   return(
+//     <ProgressBar
+//   height="80"
+//   width="80"
+//   ariaLabel="progress-bar-loading"
+//   wrapperStyle={{}}
+//   wrapperClass="progress-bar-wrapper"
+//   borderColor = '#F4442E'
+//   barColor = '#51E5FF'
+// />
+//   )
+// }
 
 function App() {
 
   const location = useLocation();
-  const { user, setUser } = useContext(ReferenceDataContext);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
 
   useEffect(() => {
     document.querySelector('html').style.scrollBehavior = 'auto'
@@ -138,21 +163,45 @@ function App() {
   }, [location.pathname]); // triggered on route change
 
   useEffect(() => {
-    axios.post("/user/info")
-    .then(response => response.data)
-    .then(setUser)
-    // .finally()
-  },[axios,setUser]);
+    dispatch(fetchUser())
+    dispatch(fetchHospital())
+  },[dispatch]);
+
+  if(user.status === "loading"){
+    return(<><LoaderPage/></>)
+  }
+  console.log(user)
   return (
     <>
       <SuperTokensWrapper>
+
+        <Suspense fallback={<LoaderPage />}>
         <Routes>
+
             {getSuperTokensRoutesForReactRouterDom(reactRouterDom)}
             <Route exact path="/" element={
-              <SessionAuth><Dashboard /></SessionAuth> 
+              <SessionAuth>
+                  <DashboardHome />
+              </SessionAuth>
             } />
             <Route exact path="/dashboard/home" element={
-              <SessionAuth><DashboardHome /></SessionAuth>
+              <SessionAuth>
+                  <DashboardHome />
+              </SessionAuth>
+            } />
+            <Route exact path="/case/list" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <MedicalCaseList />
+                </SessionAuth>
+              </Suspense>
+            } />
+            <Route exact path="/case/edit/:id" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <CaseEditing />
+                </SessionAuth>
+              </Suspense>
             } />
             <Route path="/dashboard/analytics" element={<Analytics />} />
             <Route path="/dashboard/fintech" element={<Fintech />} />
@@ -219,7 +268,10 @@ function App() {
             <Route path="/component/accordion" element={<AccordionPage />} />
             <Route path="/component/icons" element={<IconsPage />} />
             <Route path="*" element={<PageNotFound />} />
+
         </Routes>
+
+        </Suspense>
       </SuperTokensWrapper>
     </>
   );

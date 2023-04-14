@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Transition from '../utils/Transition';
-
+import { signOut } from "supertokens-auth-react/recipe/emailpassword";
 import UserAvatar from '../images/user-avatar-32.png';
 
 function DropdownProfile({
@@ -84,8 +84,11 @@ function DropdownProfile({
             <li>
               <Link
                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
-                to="/signin"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                to="/auth/signout"
+                onClick={async() => {
+                  await signOut()
+                  window.location.href = "/";
+                }}
               >
                 Sign Out
               </Link>

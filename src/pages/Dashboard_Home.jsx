@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState, lazy } from 'react';
 
 import Sidebar from '../partials/Sidebar';
 import Header from '../partials/Header';
@@ -17,13 +17,35 @@ import DashboardCard08 from '../partials/dashboard/DashboardCard08';
 import DashboardCard09 from '../partials/dashboard/DashboardCard09';
 import DashboardCard10 from '../partials/dashboard/DashboardCard10';
 import DashboardCard11 from '../partials/dashboard/DashboardCard11';
+import { InfinitySpin } from "react-loader-spinner";
 
+
+import { useDispatch, useSelector } from 'react-redux';
+
+
+const LoaderPage = () => {
+  return(
+      <div class="flex h-screen">
+        <div class="m-auto">
+          <InfinitySpin 
+            width='200'
+            color="#FF5733"
+          />
+        </div>
+      </div>
+  )
+}
 function Dashboard() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  if(user.loading) return <LoaderPage />
+  if(!user.loading) {
   return (
     <div className="flex h-screen overflow-hidden">
+
+      <Suspense fallback={<LoaderPage />}>
 
       {/* Sidebar */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -38,7 +60,8 @@ function Dashboard() {
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
             {/* Welcome banner */}
-            <WelcomeBanner />
+              <WelcomeBanner user={user} />
+            
 
             {/* Dashboard actions */}
             <div className="sm:flex sm:justify-between sm:items-center mb-8">
@@ -96,8 +119,10 @@ function Dashboard() {
 
       </div>
 
+      </Suspense>
     </div>
   );
+  }
 }
 
 export default Dashboard;

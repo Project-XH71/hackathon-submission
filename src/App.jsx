@@ -85,6 +85,7 @@ import IconsPage from './pages/component/IconsPage';
 const DashboardHome = lazy(() => import('./pages/Dashboard_Home'));
 
 import MedicalCaseList from './pages/medical_center/MedicalCaseList';
+import LabCaseList from './pages/lab_center/MedicalCaseList';
 
 import SuperTokensRequest from 'supertokens-website';
 import axios from "axios";
@@ -104,6 +105,7 @@ import { fetchHospital } from "./redux/MyHospitalSlice";
 import { ProgressBar } from "react-loader-spinner";
 import LoaderPage from './utils/LoadingPage1';
 import CaseEditing from "./pages/medical_case/CaseEditing"
+import LabCaseEditing from "./pages/lab_case/CaseEditing"
 // import { ReferenceDataContext, ReferenceDataContextProvider } from "./context/ReferenceDataContext"
 
 
@@ -196,10 +198,24 @@ function App() {
                 </SessionAuth>
               </Suspense>
             } />
+            <Route exact path="/lab/list" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <LabCaseList />
+                </SessionAuth>
+              </Suspense>
+            } />
             <Route exact path="/case/edit/:id" element={
               <Suspense fallback={<LoaderPage />}>
                 <SessionAuth>
                     <CaseEditing />
+                </SessionAuth>
+              </Suspense>
+            } />
+            <Route exact path="/case/edit/:id" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <LabCaseEditing />
                 </SessionAuth>
               </Suspense>
             } />

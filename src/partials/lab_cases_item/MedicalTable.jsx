@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+
 import MedicalItem from './MedicalTableItem';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -77,7 +79,7 @@ function InvoicesTable({
 //         }
 //     }
 // ] 
-
+  const { id } = useParams();
   const [selectAll, setSelectAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
   const [list, setList] = useState([]);
@@ -94,16 +96,13 @@ function InvoicesTable({
 
 
   useEffect(() => {
-    // Function to fetch posts
     const fetchMedicalCases = async () => {
       try {
         // Update loading state to true
         setLoading(true);
 
         // Make API call to fetch posts
-        const response = await axios.get(`${process.env.API_URL}/hospital/medical-case/get`,{
-          hospitalId: hospital.data.id
-        });
+        const response = await axios.get(`${process.env.API_URL}/medical_case/data/${id}`);
         setMedicalCases(response.data);
 
         // Update loading state to false
@@ -147,7 +146,7 @@ function InvoicesTable({
   return (
     <div className="bg-white shadow-lg rounded-sm border border-slate-200 relative">
       <header className="px-5 py-4">
-        <h2 className="font-semibold text-slate-800">Cases <span className="text-slate-400 font-medium">{medicalCases.length}</span></h2>
+        <h2 className="font-semibold text-slate-800">Lab Reports <span className="text-slate-400 font-medium">{medicalCases.length}</span></h2>
       </header>
       <div>
 

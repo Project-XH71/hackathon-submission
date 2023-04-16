@@ -139,7 +139,7 @@ function BarChart05({
       <div className="px-5 py-3">
         <div className="flex flex-wrap justify-between items-center">
           <div className="flex items-center">
-            <div className="text-3xl font-bold text-slate-800 mr-2">$1,347.09</div>
+            <div className="text-3xl font-bold text-slate-800 mr-2">1,347.09</div>
             <div className="text-sm">Net</div>
           </div>
           <div className="grow ml-2">

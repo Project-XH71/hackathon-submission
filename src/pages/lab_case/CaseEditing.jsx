@@ -48,7 +48,10 @@ function EmptyState() {
         // setLoading(true);
 
         // Make API call to fetch posts
-        const response = await axios.get(`${process.env.API_URL}/medical-case/data/${id}`);
+        const response = await axios.post(`${process.env.API_URL}/medical-case/lab_report/data/create`,{
+          medicalCaseid: id,
+          
+        });
         setOldData({
           patientName: response.data.data.patientName,
           patientVpa: response.data.data.patientVpa,

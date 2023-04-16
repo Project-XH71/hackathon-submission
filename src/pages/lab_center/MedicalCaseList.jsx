@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ModalBasic from '../../components/ModalBasic';
 
 import Sidebar from '../../partials/Sidebar';
 import Header from '../../partials/Header';
@@ -7,56 +6,20 @@ import SearchForm from '../../partials/actions/SearchForm';
 import DeleteButton from '../../partials/actions/DeleteButton';
 import DateSelect from '../../components/DateSelect';
 import FilterButton from '../../components/DropdownFilter';
-import MedicalTable from '../../partials/medical_cases_item/MedicalTable';
+import MedicalTable from '../../partials/lab_cases_item/MedicalTable';
 import PaginationClassic from '../../components/PaginationClassic';
-import Tooltip from '../../components/Tooltip';
 
 function Invoices() {
 
-  const [ vpa, setVpa ] = useState('');
-
-  const ModalFrontEnd = () => {
-    return(
-          <div>
-              <div className="grid gap-5 md:grid-cols-3">
-                    <div>
-                      {/* Start */}
-                      <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="newKey">
-                          {"Key"}
-                        </label>
-                        <input onChange={(e) =>{e.preventDefault(); setVpa(e.target.value)}}  value={vpa} id="newKey" className="form-input w-full" type="text" />
-                      </div>
-                      {/* End */}
-                    </div>
-
-                    <div>
-                      {/* Start */}
-                      <div>
-                        <label className="block text-sm font-medium mb-1" htmlFor="newKey">
-                          {"Key"}
-                        </label>
-                        <input onChange={(e) =>{e.preventDefault(); setVpa(e.target.value)}}  value={vpa} id="newKey" className="form-input w-full" type="text" />
-                      </div>
-                      {/* End */}
-                    </div>
-                  </div>
-          </div>
-    )
-  }
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [basicModalOpen, setBasicModalOpen] = useState(false);
 
   const handleSelectedItems = (selectedItems) => {
     setSelectedItems([...selectedItems]);
   };
 
   return (
-    
     <div className="flex h-screen overflow-hidden">
-      
 
       {/* Sidebar */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -75,26 +38,21 @@ function Invoices() {
 
               {/* Left: Title */}
               <div className="mb-4 sm:mb-0">
-                <h1 className="text-2xl md:text-3xl text-slate-800 font-bold">Medical Cases ⚕️</h1>
+                <h1 className="text-2xl md:text-3xl text-slate-800 font-bold">Lab Cases ⚕️</h1>
               </div>
-              
 
               {/* Right: Actions */}
               <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
                 {/* Search form */}
                 <SearchForm placeholder="Search Cases" />
-
-                {/* Basic Modal */}
-                
                 {/* Create invoice button */}
-                <button onClick={(e) => { e.stopPropagation(); setBasicModalOpen(true); }} className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+                <button className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                   <svg className="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
                     <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
                   </svg>
-                  <span className="hidden xs:block ml-2">Create Medical Cases</span>
+                  <span className="hidden xs:block ml-2">Create Lab Report</span>
                 </button>
               </div>
-              
 
             </div>
 
@@ -130,8 +88,6 @@ function Invoices() {
               </div>
 
             </div>
-
-            
 
             {/* Table */}
             <MedicalTable selectedItems={handleSelectedItems} />

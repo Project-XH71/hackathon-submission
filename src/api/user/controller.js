@@ -1,5 +1,7 @@
 const { verifySession } = require("supertokens-node/recipe/session/framework/express");
 const UserMetadata = require("supertokens-node/recipe/usermetadata");
+const UserRoles = require("supertokens-node/recipe/userroles");
+
 const { v4: uuidv4 } = require('uuid');
 
 const _secure = require("../_secure");
@@ -64,6 +66,16 @@ module.exports.updateUserMetadata = async(req,res) => {
         return res.send(userMetadata);
 
 
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}
+
+module.exports.getUserRoles = async(req,res) => {
+    try {
+        const userId = req.session.getUserId();
+        const roles = await UserRoles.getRolesForUser(userId);
+        return res.status(200).send(roles);
     } catch (error) {
         return res.status(500).send({message: error.message});
     }

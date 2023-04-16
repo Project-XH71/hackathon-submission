@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./controllers.js');
 const { verifySession } = require("supertokens-node/recipe/session/framework/express");
-const rbac = require("../../_auth/rbac.js");
+const rbac = require("../_auth/rbac.js");
 
 
 // Route Status Check
@@ -10,23 +10,23 @@ router.get('/', verifySession() ,async(req,res) => {
     res.status(200).send("Doctor Medical Route -> OK");
 })
 
-//-----------------Medical Case----------------//
 
-// Assign Patient to User
-router.post('/create/doctor-visit', verifySession(), rbac() ,controller.createMedicalCaseByDoctor);
+//-----------------Self Goverment Service----------------//
+
+router.get("/all",verifySession(), rbac(), controller.getHospitals);
+
+router.post("/doctor",verifySession(), rbac(), controller.addDoctorInHospital);
+
+router.get("/doctor",verifySession(), rbac(), controller.getDoctorsInHospital);
+
+router.post("/create", verifySession(), rbac(), controller.createHospital)
+
+//-----------------Self Hospital Service----------------//
 
 
+router.get('/medical-case/get', verifySession(), rbac() ,controller.getMedicalCasesInHospital);
 
-//-----------------Diagnosis----------------//
 
-// Create Diagnosis
-router.post('/diagnosis/create', verifySession(), rbac() ,controller.addDignosesbyDoctor);
-
-// Update Diagnosis
-router.patch('/diagnosis/update', verifySession(), rbac() ,controller.updateDignosesbyDoctor);
-
-// Delete Diagnosis
-router.delete('/diagnosis/delete', verifySession(), rbac() ,controller.deleteDignosesbyDoctor);
 
 
 

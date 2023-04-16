@@ -38,6 +38,7 @@ model doctor {
   updatedAt                    DateTime                       @default(now()) @db.Timestamptz(6)
   backend_pat_doc_verification backend_pat_doc_verification[]
   user                         user                           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  doctor_hospital              doctor_hospital[]
   doctor_visits                doctor_visits[]
 }
 
@@ -46,22 +47,23 @@ model doctor_visits {
   visitId   String
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @db.Timestamptz(6)
-  doctor    doctor   @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  visits    visits   @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  doctor    doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  visits    visits   @relation(fields: [visitId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([visitId, doctorId])
 }
 
 model medical_case {
-  id         String       @id @default(dbgenerated("gen_random_uuid()"))
-  data       String?
-  createdAt  DateTime     @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime     @default(now()) @db.Timestamptz(6)
-  patientId  String
-  diagnoses  diagnoses[]
-  lab_report lab_report[]
-  patient    patient      @relation(fields: [patientId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  visits     visits[]
+  id                    String                  @id @default(dbgenerated("gen_random_uuid()"))
+  data                  String?
+  createdAt             DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime                @default(now()) @db.Timestamptz(6)
+  patientId             String
+  diagnoses             diagnoses[]
+  lab_report            lab_report[]
+  patient               patient                 @relation(fields: [patientId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  medical_case_hospital medical_case_hospital[]
+  visits                visits[]
 }
 
 model medical_center {
@@ -95,7 +97,7 @@ model visits {
   diagnoses_visits   diagnoses_visits[]
   doctor_visits      doctor_visits[]
   lab_reports_visits lab_reports_visits[]
-  medical_case       medical_case         @relation(fields: [medicalCaseId], references: [id], onDelete: Cascade)
+  medical_case       medical_case         @relation(fields: [medicalCaseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model backend_pat_doc_verification {
@@ -127,7 +129,7 @@ model diagnoses {
   diagnoseAt       DateTime?          @db.Timestamptz(6)
   createdAt        DateTime           @default(now()) @db.Timestamptz(6)
   updatedAt        DateTime           @default(now()) @db.Timestamptz(6)
-  medical_case     medical_case       @relation(fields: [medicalCaseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  medical_case     medical_case       @relation(fields: [medicalCaseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   diagnoses_visits diagnoses_visits[]
 }
 
@@ -136,8 +138,8 @@ model diagnoses_visits {
   diagnosesId String
   created_at  DateTime  @default(now()) @db.Timestamptz(6)
   updated_at  DateTime  @default(now()) @db.Timestamptz(6)
-  diagnoses   diagnoses @relation(fields: [diagnosesId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  visits      visits    @relation(fields: [visitId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  diagnoses   diagnoses @relation(fields: [diagnosesId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  visits      visits    @relation(fields: [visitId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([visitId, diagnosesId])
 }
@@ -172,4 +174,42 @@ model user_metadata {
   updatedAt   DateTime  @default(now()) @db.Timestamp(6)
   address     String?
   user        user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model doctor_hospital {
+  doctorId   String
+  hospitalId String
+  position   String
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime @default(now()) @db.Timestamptz(6)
+  doctor     doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  hospital   hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([doctorId, hospitalId])
+}
+
+model hospital {
+  id                    String                  @id(map: "hospital_pkey1") @default(dbgenerated("gen_random_uuid()"))
+  name                  String
+  latitude              String
+  longitude             String
+  address               String
+  pinCode               String
+  state                 String
+  city                  String
+  createdAt             DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime                @default(now()) @db.Timestamptz(6)
+  doctor_hospital       doctor_hospital[]
+  medical_case_hospital medical_case_hospital[]
+}
+
+model medical_case_hospital {
+  medicalCaseId String
+  hospitalId    String
+  createdAt     DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime     @default(now()) @db.Timestamptz(6)
+  hospital      hospital     @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  medical_case  medical_case @relation(fields: [medicalCaseId], references: [id], onDelete: Cascade)
+
+  @@id([medicalCaseId, hospitalId])
 }

@@ -102,19 +102,122 @@ const _secure = require("../_secure");
 
 
 const ageCalculator = (dob) => {
-    const ageDifMs = Date.now() - birthday.getTime();
+    const ageDifMs = Date.now() - dob.getTime();
     const ageDate = new Date(ageDifMs); // miliseconds from epoch
     return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
 
 
+module.exports.createMedicalCaseData = async (req, res) => {
+    let medicalCaseData;
+    try {
+      const { patientVpa, doctorId, hospitalId } = req.body;
+  
+      const visit = await prisma.$transaction(async (transaction) => {
 
+        // -> Retrieve Patient Metadata, Userdata and VPA Data
+        const pvData = await transaction.user_vpa.findUnique({
+          where: {
+            vpa: patientVpa,
+          },
+          include: {
+            user: {
+              include: {
+                user_metadata: true,
+              },
+            },
+
+          }
+        });
+  
+        // -> Create Medical Case Data with Patient Metadata
+        medicalCaseData = {
+            patientName: pvData.user.name,
+            patientVpa: pvData.vpa,
+            vitalSignature:{
+                dob: pvData.user.user_metadata.dob,
+                weight: 0,
+                height: 0,
+                bmi: 0,
+                age: ageCalculator(pvData.user.user_metadata.dateOfBirth),
+            }
+        };
+  
+        // -> Encrypt Medical Case Data
+        const { cipher, secretKey, secretVI } =
+          _secure.encryption.encryptData(JSON.stringify(medicalCaseData));
+  
+        // -> Store Medical Case Data in Medical Case Table
+        // -> Store Secret Key in Backend Escrow Table
+        const visit = await transaction.visits.create({
+          data: {
+            doctor_visits: {
+              create: {
+                doctor: {
+                  connect: {
+                    id: doctorId,
+                  },
+                },
+              },
+            },
+            medical_case: {
+              create: {
+                data: cipher,
+                patient:{
+                    connect:{
+                        userId: pvData.userId,
+                    }
+                },
+                medical_case_hospital:{
+                    create:{
+                        hospital:{
+                            connect:{
+                                id: hospitalId
+                            }
+                        }
+                    }
+                }
+
+              },
+            },
+
+          },
+          include: {
+            doctor_visits: true,
+            medical_case: {
+                include:{
+                    medical_case_hospital: {
+                        include:{
+                            hospital: true
+                        }
+                    }
+                }
+            }
+          }});
+  
+        await prisma.backend_escrow.create({
+          data: {
+            key: visit.medicalCaseId,
+            secretKey: secretKey,
+            secretVI: secretVI,
+          }
+        });
+  
+        return visit;
+      });
+  
+      return res.send({ ...visit, medical_case: { ...visit.medical_case, data: medicalCaseData } });
+    } catch (error) {
+        console.log(error)
+      return res.status(500).send({ message: error.message });
+    }
+};
 
 module.exports.updateMedicalCaseData = async(req,res) => {
     let updatedData;
     try {
-        const { data, medicalCaseid } = req.body;
+        const { data, medicalCaseid, hospitalId } = req.body;
         // const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(data));
 
         const updatedDataX = await prisma.$transaction(async (transaction) => {
@@ -147,7 +250,27 @@ module.exports.updateMedicalCaseData = async(req,res) => {
                     id: getMedicalCase.id
                 },
                 data:{
-                    data: cipher
+                    data: cipher,
+                    // medical_case_hospital:{
+                    //     upsert:{
+                    //         create:{
+                    //             hospital:{
+                    //                 connect:{
+                    //                     id: hospitalId
+                    //                 }
+                    //             }
+                    //         },
+                    //         update:{
+                    //             hospitalId: hospitalId
+                    //         },
+                    //         where:{
+                    //             medicalCaseId_hospitalId:{
+                    //                 medicalCaseId: getMedicalCase.id,
+                    //                 hospitalId: hospitalId
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 }
             });
 
@@ -174,13 +297,17 @@ module.exports.updateMedicalCaseData = async(req,res) => {
 
 module.exports.getMedicalCaseData = async(req,res) => {
     try {
-        const { medicalCaseId } = req.body;
+        const { medicalCaseId } = req.params;
+
+        console.log("From apiL:", medicalCaseId);
 
         const secretKeyData = await prisma.backend_escrow.findUnique({
             where:{
                 key: medicalCaseId
             }
         });
+
+        
 
         const medicalCase = await prisma.medical_case.findUnique({
             where:{
@@ -229,8 +356,6 @@ module.exports.deleteMedicalCase = async(req,res) => {
         return res.status(500).send({message: error.message});
     }
 }
-
-
 
 module.exports.createLabReport = async(req,res) => {
 
@@ -330,6 +455,8 @@ module.exports.createLabReport = async(req,res) => {
         return res.status(500).send({message: error.message});
     }
 }
+
+
 
 
 

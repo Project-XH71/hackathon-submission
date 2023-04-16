@@ -243,6 +243,31 @@ module.exports.addDignosesbyDoctor = async(req,res) => {
     }
 }
 
+module.exports.addDignosesbyAdmin = async(req,res) => {
+  try {
+      const { doctorId ,medicalCaseId, diagnoses, diagnoseAt  } = req.body;
+      // const {doctorId} = (await UserMetadata.getUserMetadata(req.session.getUserId())).metadata;
+
+      const diagnosis = await prisma.diagnoses.create({
+          data:{
+              medical_case:{
+                  connect:{
+                      id: medicalCaseId
+                  }
+              },
+              diagnoses,
+              diagnoseAt: diagnoseAt || new Date()
+          }
+      });
+
+      return res.status(200).send(diagnosis);
+
+
+  } catch (error) {
+      return res.status(500).send({message: error.message});
+  }
+}
+
 module.exports.updateDignosesbyDoctor = async(req,res) => {
     try {
         const { medicalCaseId, diagnoses, diagnoseAt, diagnoseId  } = req.body;
@@ -281,4 +306,26 @@ module.exports.deleteDignosesbyDoctor = async(req,res) => {
         return res.status(500).send({message: error.message});
     }
 }
+
+module.exports.myHospital = async(req,res) => {
+    try {
+        const {doctorId} = (await UserMetadata.getUserMetadata(req.session.getUserId())).metadata;
+        const hospital = await prisma.hospital.findMany({
+            where:{
+              doctor_hospital:{
+                every:{
+                  doctor:{
+                    id: doctorId
+                  }
+                }
+              }
+            }
+        });
+        if(hospital.length === 0) return res.status(200).send({hospital: null});
+        return res.status(200).send(hospital[0]);
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}
+
 

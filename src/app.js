@@ -17,12 +17,12 @@ app.use(
   cors({
       origin: "http://localhost:5173",
       allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders(),"anti-csrf", "rid", "fdi-version", "authorization", "st-auth-mode", "Origin, X-Requested-With, Content-Type, Accept, Authorization"],
-      methods: ["GET", "PUT", "POST", "DELETE"],
+      methods: ["GET", "PUT", "POST", "DELETE", "PATCH","PUT"],
       credentials: true,
       // origin: true,
   })
 );
-
+app.disable('etag');
 // This exposes all the APIs from SuperTokens to the client.
 app.use(middleware());
 
@@ -50,6 +50,7 @@ app.use("/admin", require("./api/admin/route"));
 app.use("/vpa",require("./api/vpa/routes.js"));
 app.use("/patient",require("./api/patient/routes.js"));
 app.use("/medical-case",require("./api/medical_case/routes.js"));
+app.use("/hospital",require("./api/hospital/routes.js"));
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

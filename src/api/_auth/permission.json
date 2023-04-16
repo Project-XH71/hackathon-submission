@@ -80,14 +80,32 @@
             },
             "/*":{
                 "scopes":{
-                    "GET": ["user-get"],
+                    "GET": ["root","doctor"],
                     "POST":["root","doctor"]
                 }
             }
         },
         "/*":{
             "scopes":{
-                "GET": ["root"],
+                "GET": ["root","doctor"],
+                "POST":["root","doctor"],
+                "PUT":["root","doctor"],
+                "DELETE":["root","doctor"],
+                "PATCH":["root","doctor"]
+            }
+        }
+    },
+    "/hospital":{
+        "scopes":{
+            "GET": ["root","doctor"],
+            "POST":["root","doctor"],
+            "PUT":["root","doctor"],
+            "DELETE":["root","doctor"],
+            "PATCH":["root","doctor"]
+        }, 
+        "/*":{
+            "scopes":{
+                "GET": ["root","doctor"],
                 "POST":["root","doctor"],
                 "PUT":["root","doctor"],
                 "DELETE":["root","doctor"],

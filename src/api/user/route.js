@@ -18,6 +18,8 @@ router.post('/info', verifySession(), controller.info);
 router.patch("/metadata", verifySession(), controller.updateUserMetadata);
 
 
+router.get("/getmyroles", verifySession(), controller.getUserRoles);
+
 
 
 

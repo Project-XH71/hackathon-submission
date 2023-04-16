@@ -1,7 +1,7 @@
 const prisma = require("../../../primsaInit.js");
 const { v4: uuidv4 } = require('uuid');
 const UserMetadata = require("supertokens-node/recipe/usermetadata");
-const _secure = require("../_secure");
+const _secure = require("../../_secure");
 
 // module.exports.createMedicalCaseByDoctor = async(req,res) => {
 //     try {
@@ -102,7 +102,7 @@ const _secure = require("../_secure");
 
 
 const ageCalculator = (dob) => {
-    const ageDifMs = Date.now() - birthday.getTime();
+    const ageDifMs = Date.now() - dob.getTime();
     const ageDate = new Date(ageDifMs); // miliseconds from epoch
     return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
@@ -209,6 +209,37 @@ module.exports.createLabReport = async(req,res) => {
 
     } catch (error) {
         await transaction.rollback();
+        return res.status(500).send({message: error.message});
+    }
+}
+
+module.exports.getLabReport = async(req,res) => {
+    try {
+        const { id } = req.params;
+
+
+        const secretKeyData = await prisma.backend_escrow.findUnique({
+            where:{
+                key: id
+            }
+        });
+
+        
+
+        const labReport = await prisma.medical_case.findUnique({
+            where:{
+                id: id
+            }
+        });
+        
+
+        const decryptData = _secure.decryption.decryptData(labReport.data, secretKeyData.secretKey, secretKeyData.secretVI);
+
+
+        return res.send({ ...labReport,  data: JSON.parse(decryptData)});
+
+    } catch (error) {
+        console.log(error);
         return res.status(500).send({message: error.message});
     }
 }
@@ -323,9 +354,4 @@ module.exports.deleteLabReport = async(req,res) => {
         return res.status(500).send({message: error.message});
     }
 }
-
-
-
-
-
 

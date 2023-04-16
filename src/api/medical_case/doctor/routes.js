@@ -10,6 +10,12 @@ router.get('/', verifySession() ,async(req,res) => {
     res.status(200).send("Doctor Medical Route -> OK");
 })
 
+
+//------------------Hospital------------------//
+
+// medical-case/doctor/myhospital
+router.get("/myhospital", verifySession(), rbac() ,controller.myHospital)
+
 //-----------------Medical Case----------------//
 
 // Assign Patient to User

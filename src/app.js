@@ -52,6 +52,11 @@ app.use("/patient",require("./api/patient/routes.js"));
 app.use("/medical-case",require("./api/medical_case/routes.js"));
 app.use("/hospital",require("./api/hospital/routes.js"));
 
+
+
+app.use("/v2/user", require("./api/user_v2/route.js"));
+app.use("/v2/medical_case", require("./api/medical_case_v2/routes"));
+
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
 

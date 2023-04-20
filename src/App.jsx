@@ -115,7 +115,7 @@ SuperTokens.init({
         // learn more about this on https://supertokens.com/docs/emailpassword/appinfo
         appName: "Hackathon",
         apiDomain: "http://localhost:5000",
-        websiteDomain: "http://localhost:5173",
+        websiteDomain: process.env.WEBSITE_DOMAIN,
         apiBasePath: "/auth",
         websiteBasePath: "/auth",
     },

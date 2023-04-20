@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "export API_URL='http://localhost:5000'&& vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "production":"sudo docker build -t healthsync-webapp . && sudo docker run -d -p 8080:80 healthsync-webapp"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",

@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { useNavigate } from "react-router-dom";
-
+import axios from 'axios';
 function InvoicesTableItem(props) {
   const navigate = useNavigate();
 
@@ -11,6 +11,18 @@ function InvoicesTableItem(props) {
     // window.location.href = `/case/edit/${id}`; // Redirect to URL with 'id' parameter
   };
 
+  const handleDelete = async(medicalCaseId) => {
+    try {
+      console.log("Thisis md: ,",medicalCaseId)
+      const response = await axios.delete(`${process.env.API_URL}/v2/medical_case/data`,{
+        medicalCaseId
+      });
+      console.log(response);
+      navigate('case/list')
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
   const totalColor = (status) => {
     switch (status) {
@@ -103,7 +115,7 @@ function InvoicesTableItem(props) {
                 <path d="M16 20c.3 0 .5-.1.7-.3l5.7-5.7-1.4-1.4-4 4V8h-2v8.6l-4-4L9.6 14l5.7 5.7c.2.2.4.3.7.3zM9 22h14v2H9z" />
             </svg>
           </button>
-          <button className="text-rose-500 hover:text-rose-600 rounded-full">
+          <button onClick={(e) => handleDelete(props.id)} className="text-rose-500 hover:text-rose-600 rounded-full">
             <span className="sr-only">Delete</span>
             <svg className="w-8 h-8 fill-current" viewBox="0 0 32 32">
                 <path d="M13 15h2v6h-2zM17 15h2v6h-2z" />

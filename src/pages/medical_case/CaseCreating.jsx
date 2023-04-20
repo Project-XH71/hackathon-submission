@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Sidebar from '../../partials/Sidebar';
 import Header from '../../partials/Header';
@@ -9,13 +10,16 @@ import ModalBasic from '../../components/ModalBasic';
 import LoaderPage from '../../utils/LoadingPage1';
 
 function EmptyState() {
+  const hospitalData = useSelector(state => state.hospital);
+  const hospitalId = hospitalData.data.id;
+  const userData = useSelector(state => state.user);
+  const doctorId = userData.data.auth.metadata.doctorId;
   const navigate = useNavigate();
   const [basicModalOpen, setBasicModalOpen] = useState(false);
-  const { id } = useParams();
+  // const { id } = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [formData, setFormData] = useState({}); // Form data as key-value pairs
   const [oldData, setOldData] = useState({
-    patientName: "",
     patientVpa: "",
     vitalSignature: {
         age: 0,
@@ -29,72 +33,65 @@ function EmptyState() {
     createdAt: "",
     updatedAt: ""
 }); // Old data retrieved from DB
-  const [isLoaded, setIsLoaded] = useState(false); // Flag to track data retrieval status
+  const [isLoaded, setIsLoaded] = useState(true); // Flag to track data retrieval status
   const [additionalData, setAdditionalData] = useState([]);
   const [newKey, setNewKey] = useState('');
   const [newValue, setNewValue] = useState('');
 
-  const [toast3WarningOpen, setToast3WarningOpen] = useState(false);
-  const [toast3ErrorOpen, setToast3ErrorOpen] = useState(false);
-  const [toast3SuccessOpen, setToast3SuccessOpen] = useState(true);
-  const [toast3InfoOpen, setToast3InfoOpen] = useState(false);
   console.log(oldData);
 
   useEffect(() => {
     // Function to fetch posts
-    const fetchMedicalCases = async () => {
-      try {
-        // Update loading state to true
-        // setLoading(true);
+    // const fetchMedicalCases = async () => {
+    //   try {
+    //     // Update loading state to true
+    //     // setLoading(true);
 
-        // Make API call to fetch posts
-        const response = await axios.get(`${process.env.API_URL}/medical-case/data/${id}`);
-        setOldData({
-          patientName: response.data.data.patientName,
-          patientVpa: response.data.data.patientVpa,
-          vitalSignature: {
-              age: response.data.data.vitalSignature.age,
-              bmi: response.data.data.vitalSignature.bmi,
-              height: response.data.data.vitalSignature.height,
-              weight: response.data.data.vitalSignature.weight,
-              covidshot_1: response.data.data.vitalSignature.covidshot_1,
-              covidshot_2: response.data.data.vitalSignature.covidshot_2
-          },
-          data:{
-            ...response.data.data.data
-          },
-          createdAt: response.data.createdAt,
-          updatedAt: response.data.updatedAt,
-        });
-        setIsLoaded(true);
+    //     // Make API call to fetch posts
+    //     const response = await axios.get(`${process.env.API_URL}/medical-case/data/${id}`);
+    //     setOldData({
+    //       patientName: response.data.data.patientName,
+    //       patientVpa: response.data.data.patientVpa,
+    //       vitalSignature: {
+    //           age: response.data.data.vitalSignature.age,
+    //           bmi: response.data.data.vitalSignature.bmi,
+    //           height: response.data.data.vitalSignature.height,
+    //           weight: response.data.data.vitalSignature.weight,
+    //           covidshot_1: response.data.data.vitalSignature.covidshot_1,
+    //           covidshot_2: response.data.data.vitalSignature.covidshot_2
+    //       },
+    //       data:{
+    //         ...response.data.data.data
+    //       },
+    //       createdAt: response.data.createdAt,
+    //       updatedAt: response.data.updatedAt,
+    //     });
+    //     setIsLoaded(true);
 
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-        // Update loading state to false
-        // setLoading(false);
-      }
-    };
-    fetchMedicalCases();
+    //   } catch (error) {
+    //     console.error('Error fetching posts:', error);
+    //     // Update loading state to false
+    //     // setLoading(false);
+    //   }
+    // };
+    // fetchMedicalCases();
   }, []);
 
   const handleInputChange = (key, value) => {
     setFormData(prevFormData => ({ ...prevFormData, [key]: value }));
   };
 
-  const handleAddField = () => {
-    // Add a new field to the additional data state
-    setAdditionalData([...additionalData, { key: '', value: '' }]);
-  };
 
   const handleSubmit = async(e) => {
-    console.log("Before:", oldData, id)
     // Save form data to DB (replace with your API endpoint and HTTP method)
-    await axios.patch(`${process.env.API_URL}/medical-case/data/update`, {
-      medicalCaseid: id,
-      data: oldData,
+    await axios.post(`${process.env.API_URL}/v2/medical_case/data/create`, {
+      doctorId: doctorId,
+      medicalRecordData: oldData,
+      hospitalId: hospitalId,
+      patientVpa: oldData.patientVpa,
     });
 
-    navigate('/case/create')
+    navigate('/case/list')
 
     
     
@@ -173,7 +170,7 @@ function EmptyState() {
             
               {/* Left: Title */}
               <div className="mb-4 sm:mb-0">
-                <h1 className="text-2xl md:text-3xl text-slate-800 font-bold">Edit Medical Case 📝</h1>
+                <h1 className="text-2xl md:text-3xl text-slate-800 font-bold">Create Medical Case 📝</h1>
               </div>
 
               {/* Right: Actions */}
@@ -207,71 +204,18 @@ function EmptyState() {
                   <div className="grid gap-5 md:grid-cols-3">
 
                         <div>
-                          {/* Start */}
-                          <div>
-                            <label className="block text-sm font-medium mb-1" htmlFor="default">
-                              {"Patient Name"}
-                            </label>
-                            <input disabled={true} value={oldData.patientName} id="default" className="form-input w-full" type="text" />
-                          </div>
-                          {/* End */}
-                        </div>
-
-                        <div>
-                          {/* Start */}
-                          <div>
-                            <label className="block text-sm font-medium mb-1" htmlFor="age">
-                              {"Age"}
-                            </label>
-                            <input disabled={true} value={oldData.vitalSignature.age} id="age" className="form-input w-full" type="number" />
-                          </div>
-                          {/* End */}
-                        </div>
-
-                        <div>
                         {/* Start */}
                           <div>
                             <label className="block text-sm font-medium mb-1" htmlFor="patientVpa">
                               {"Virtual Private Identification"}
                             </label>
                             <div className="relative">
-                              <input value={oldData.patientVpa.replace(/@upi/g,'')} id="patientVpa" className="form-input w-full pr-8" type="text" />
-                              <div disabled={true} className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                                <span className="text-sm text-slate-400 font-medium px-3">{"e"}</span>
+                              <input onChange={(e) => setOldData((x) => ({...x, patientVpa: e.target.value}))} value={oldData.patientVpa.replace(/@upi/g,'')} id="patientVpa" className="form-input w-full pr-8" type="text" />
+                              <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
+                                <span className="text-sm text-slate-400 font-medium px-3">{"@uhi"}</span>
                               </div>
                             </div>
                           </div>
-                        {/* End */}
-                      </div>
-                      <div>
-                        {/* Start */}
-                        <div>
-                          <label className="block text-sm font-medium mb-1" htmlFor="createdAt">
-                            {"Creation Time"}
-                          </label>
-                          <div className="relative">
-                            <input disabled={true} value={moment(oldData.createdAt).calendar()} id="createdAt" className="form-input w-full pr-8" type="text" />
-                            <div disabled={true} className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                              <span className="text-sm text-slate-400 font-medium px-3">{"e"}</span>
-                            </div>
-                          </div>
-                        </div>
-                        {/* End */}
-                      </div>
-
-                      <div>
-                        {/* Start */}
-                        <div>
-                          <label className="block text-sm font-medium mb-1" htmlFor="updatedAt">
-                            {"Last Updated At"}
-                          </label>
-                          <div className="relative">
-                            <input disabled={true} value={moment(oldData.updatedAt).calendar()} id="updatedAt" className="form-input w-full pr-8" type="text" />
-                            <div disabled={true} className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                              <span className="text-sm text-slate-400 font-medium px-3">{"e"}</span>
-                            </div>
-                          </div>
-                        </div>
                         {/* End */}
                       </div>
                       
@@ -292,7 +236,7 @@ function EmptyState() {
                             </label>
                             <div className="relative">
                               <input onChange={(e) => setOldData((prev) => ({...prev, vitalSignature:{ ...prev.vitalSignature ,height: e.target.value}}))} value={oldData.vitalSignature.height} id="height" className="form-input w-full pr-8" type="text" />
-                              <div disabled={true} className="absolute inset-0 left-auto flex items-center pointer-events-none">
+                              <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
                                 <span className="text-sm text-slate-400 font-medium px-3">{"cm"}</span>
                               </div>
                             </div>
@@ -306,7 +250,7 @@ function EmptyState() {
                             </label>
                             <div className="relative">
                               <input onChange={(e) => setOldData((prev) => ({...prev, vitalSignature:{ ...prev.vitalSignature ,weight: e.target.value}}))} value={oldData.vitalSignature.weight} id="weight" className="form-input w-full pr-8" type="text" />
-                              <div disabled={true} className="absolute inset-0 left-auto flex items-center pointer-events-none">
+                              <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
                                 <span className="text-sm text-slate-400 font-medium px-3">{"kg"}</span>
                               </div>
                             </div>
@@ -331,9 +275,9 @@ function EmptyState() {
                             {"Covid Shot 1"}
                           </label>
                           <div className="relative">
-                            <input disabled={true} value={moment(oldData.vitalSignature.covidshot_1).format("DD MMMM YYYY")} id="covidshot_1" className="form-input w-full pr-8" type="text" />
-                            <div disabled={true} className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                              <span className="text-sm text-slate-400 font-medium px-3">{"e"}</span>
+                            <input onChange={(e) => setOldData((x) => ({...x , vitalSignature:{...x.vitalSignature, covidshot_1: e.target.value} }))} placeholder='YYYY-MM-DD'  value={oldData.vitalSignature.covidshot_1} id="covidshot_1" className="form-input w-full pr-8" type="text" />
+                            <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
+                              <span className="text-sm text-slate-400 font-medium px-3">{"Date Time"}</span>
                             </div>
                           </div>
                         </div>
@@ -347,9 +291,9 @@ function EmptyState() {
                             {"Covid Shot 2"}
                           </label>
                           <div className="relative">
-                            <input disabled={true} value={moment(oldData.vitalSignature.covidshot_2).format("DD MMMM YYYY")} id="covidshot_2" className="form-input w-full pr-8" type="text" />
-                            <div disabled={true} className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                              <span className="text-sm text-slate-400 font-medium px-3">{"e"}</span>
+                            <input placeholder='YYYY-MM-DD' onChange={(e) => setOldData((x) => ({...x, vitalSignature:{...x.vitalSignature, covidshot_2: e.target.value} }))} value={oldData.vitalSignature.covidshot_2} id="covidshot_2" className="form-input w-full pr-8" type="text" />
+                            <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
+                              <span className="text-sm text-slate-400 font-medium px-3">{"Date Time"}</span>
                             </div>
                           </div>
                         </div>

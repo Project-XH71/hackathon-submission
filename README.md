@@ -1,6 +1,5 @@
 
-
-#HealthSync Documentation
+# HealthSync Documentation
  
 
 ***Note: As of May 6, 14:58 IST, Team HealthSync has made the decision to turn off all the Google Cloud instances, including the Database, API, and WebApp instances, as per the instructions provided on the GFG Hackathon Communication Channel. If you have any queries, please email the Team Admin.***

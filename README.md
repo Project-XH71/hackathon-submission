@@ -1,5 +1,11 @@
 
+
 # HealthSync Documentation
+ 
+
+***Note: As of May 6, 14:58 PM IST, Team HealthSync has made the decision to turn off all the Google Cloud instances, including the Database, API, and WebApp instances, as per the instructions provided on the GFG Hackathon Communication Channel. If you have any queries, please email the Team Admin.***
+
+
 
 Technical Documentation: [HealthSync Documentation](https://docs.google.com/document/d/1Xl0Dd5wIKFGRdx8WGrb7Erw2yoQUQkSfPzJdV_I5hhI/edit?usp=sharing)
 
@@ -61,7 +67,18 @@ Our platform's unique aspect lies in its emphasis on data analytics and data sec
  3. Secure Database on  Subnet on Google VPC.
  4. Security Control Middleware on Layer 7
 
-### Architecture:
+## Google Cloud Deployment Configuration
+
+![Google Cloud Configuration Image](https://drive.google.com/uc?export=download&id=1hGMhu9vSX4qErUj9emngR1q6h6dW7esH)
+
+ - Instance Compute Type: **AMD Rome**
+ - GPU's: **NaN**
+ - Architecture: **x86/64**
+ - Machine type: **n2d-standard-2**
+ - Memory:   **8 GiB**
+ - vCPU's: **2**
+
+## Security Architecture:
 ![High Level View of Data Security Flow](https://drive.google.com/uc?export=download&id=1FcLgAy0Y7qx2s1paKgYXf_fAjCdWu29m)
 High Level View of Data Security Flow
  
@@ -72,4 +89,6 @@ High Level View of Data Security Flow
 
 
 ![ER Diagram](https://drive.google.com/uc?export=download&id=1M68A-itOkNa-6lm6wPtdYTUyHy8UfsTf)
-add
+
+
+

@@ -69,13 +69,13 @@ function InvoicesTableItem(props) {
         <div className="font-medium text-sky-500">{(props.id).split("-")[1].toUpperCase()}</div>
       </td>    
       <td className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-        <div className={`font-medium`}>{props.patient.user.user_vpa.vpa}</div>
+        <div className={`font-medium`}>{props.vpa}</div>
       </td>
       <td className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
         <div className={`inline-flex font-medium rounded-full text-center px-2.5 py-0.5 ${statusColor("Finshed")}`}>Finished</div>
       </td >  
       <td className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-        <div className="font-medium text-slate-800">{props.patient.user.name}</div>
+        <div className="font-medium text-slate-800">{props.name}</div>
       </td>
       <td className="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
         <div>{moment(props.createdAt).calendar()}</div>

@@ -8,9 +8,10 @@ import DateSelect from '../../components/DateSelect';
 import FilterButton from '../../components/DropdownFilter';
 import MedicalTable from '../../partials/lab_cases_item/MedicalTable';
 import PaginationClassic from '../../components/PaginationClassic';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function Invoices() {
-
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -38,7 +39,7 @@ function Invoices() {
 
               {/* Left: Title */}
               <div className="mb-4 sm:mb-0">
-                <h1 className="text-2xl md:text-3xl text-slate-800 font-bold">Lab Cases ⚕️</h1>
+                <h1 className="text-2xl md:text-3xl text-slate-800 font-bold">Laboratory Report ⚕️</h1>
               </div>
 
               {/* Right: Actions */}
@@ -46,7 +47,7 @@ function Invoices() {
                 {/* Search form */}
                 <SearchForm placeholder="Search Cases" />
                 {/* Create invoice button */}
-                <button className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+                <button onClick={(e) => { navigate("/case/lab/create")}} className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                   <svg className="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
                     <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
                   </svg>

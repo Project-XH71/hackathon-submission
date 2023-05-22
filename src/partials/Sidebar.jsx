@@ -13,7 +13,8 @@ function Sidebar({
   sidebarOpen,
   setSidebarOpen
 }) {
-  const roles = (useSelector((state) => state.user.data.roles));
+  // const roles = (useSelector((state) => state.user.data.roles));
+  const roles=["doctor"]
   const SidebarConfiguration = [
     {
       "op":"group",

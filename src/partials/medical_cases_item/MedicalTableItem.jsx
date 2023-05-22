@@ -10,32 +10,22 @@ function InvoicesTableItem(props) {
     navigate(`/case/edit/${id}`)
     // window.location.href = `/case/edit/${id}`; // Redirect to URL with 'id' parameter
   };
-
   const handleDelete = async(medicalCaseId) => {
     try {
-      console.log("Thisis md: ,",medicalCaseId)
-      const response = await axios.delete(`${process.env.API_URL}/v2/medical_case/data`,{
+      console.log("Thisis mdxx: ,",medicalCaseId)
+      
+      await axios.post(`${process.env.API_URL}/medical-case/data/delete`,{
         medicalCaseId
       });
-      console.log(response);
-      navigate('case/list')
+
+
+      navigate('/case/list')
     } catch (error) {
       console.log(error);
     }
   }
   
-  const totalColor = (status) => {
-    switch (status) {
-      case 'Paid':
-        return 'text-emerald-500';
-      case 'Due':
-        return 'text-amber-500';
-      case 'Overdue':
-        return 'text-rose-500';
-      default:
-        return 'text-slate-500';
-    }
-  };
+
 
   const statusColor = (status) => {
     switch (status) {

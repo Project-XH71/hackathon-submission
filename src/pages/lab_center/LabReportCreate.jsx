@@ -40,43 +40,6 @@ function EmptyState() {
 
   console.log(oldData);
 
-  // useEffect(() => {
-  //   // Function to fetch posts
-  //   // const fetchMedicalCases = async () => {
-  //   //   try {
-  //   //     // Update loading state to true
-  //   //     // setLoading(true);
-
-  //   //     // Make API call to fetch posts
-  //   //     const response = await axios.get(`${process.env.API_URL}/medical-case/data/${id}`);
-  //   //     setOldData({
-  //   //       patientName: response.data.data.patientName,
-  //   //       patientVpa: response.data.data.patientVpa,
-  //   //       vitalSignature: {
-  //   //           age: response.data.data.vitalSignature.age,
-  //   //           bmi: response.data.data.vitalSignature.bmi,
-  //   //           height: response.data.data.vitalSignature.height,
-  //   //           weight: response.data.data.vitalSignature.weight,
-  //   //           covidshot_1: response.data.data.vitalSignature.covidshot_1,
-  //   //           covidshot_2: response.data.data.vitalSignature.covidshot_2
-  //   //       },
-  //   //       data:{
-  //   //         ...response.data.data.data
-  //   //       },
-  //   //       createdAt: response.data.createdAt,
-  //   //       updatedAt: response.data.updatedAt,
-  //   //     });
-  //   //     setIsLoaded(true);
-
-  //   //   } catch (error) {
-  //   //     console.error('Error fetching posts:', error);
-  //   //     // Update loading state to false
-  //   //     // setLoading(false);
-  //   //   }
-  //   // };
-  //   // fetchMedicalCases();
-  // }, []);
-
   const handleInputChange = (key, value) => {
     setFormData(prevFormData => ({ ...prevFormData, [key]: value }));
   };
@@ -195,7 +158,7 @@ function EmptyState() {
 
                 {/* Basic Infromation */}
                 <div>
-                  <h2 className="text-2xl text-slate-800 font-bold mb-6">Basic Information</h2>
+                  <h2 className="text-2xl text-slate-800 font-bold mb-6">Medical Information</h2>
                   <div className="grid gap-5 md:grid-cols-3">
 
                         <div>
@@ -219,83 +182,7 @@ function EmptyState() {
                 </div>
 
 
-                {/* Patient Vital Infromation */}
-                <div>
-                  <h2 className="text-2xl text-slate-800 font-bold mb-6">Patient Vital Information</h2>
-                  <div className="grid gap-5 md:grid-cols-3">
-
-                        {/* Start */}
-                        <div>
-                            <label className="block text-sm font-medium mb-1" htmlFor="height">
-                              {"Patient Recorded Height"}
-                            </label>
-                            <div className="relative">
-                              <input onChange={(e) => setOldData((prev) => ({...prev, vitalSignature:{ ...prev.vitalSignature ,height: e.target.value}}))} value={oldData.vitalSignature.height} id="height" className="form-input w-full pr-8" type="text" />
-                              <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                                <span className="text-sm text-slate-400 font-medium px-3">{"cm"}</span>
-                              </div>
-                            </div>
-                          </div>
-                        {/* End */}
-
-                        {/* Start */}
-                        <div>
-                            <label className="block text-sm font-medium mb-1" htmlFor="weight">
-                              {"Patient Recorded Weight"}
-                            </label>
-                            <div className="relative">
-                              <input onChange={(e) => setOldData((prev) => ({...prev, vitalSignature:{ ...prev.vitalSignature ,weight: e.target.value}}))} value={oldData.vitalSignature.weight} id="weight" className="form-input w-full pr-8" type="text" />
-                              <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                                <span className="text-sm text-slate-400 font-medium px-3">{"kg"}</span>
-                              </div>
-                            </div>
-                          </div>
-                        {/* End */}
-
-                        <div>
-                          {/* Start */}
-                          <div>
-                            <label className="block text-sm font-medium mb-1" htmlFor="bmi">
-                              {"BMI"}
-                            </label>
-                            <input disabled={true} value={oldData.vitalSignature.bmi} id="bmi" className="form-input w-full" type="number" />
-                          </div>
-                          {/* End */}
-                        </div>
-
-                        <div>
-                        {/* Start */}
-                        <div>
-                          <label className="block text-sm font-medium mb-1" htmlFor="covidshot_1">
-                            {"Covid Shot 1"}
-                          </label>
-                          <div className="relative">
-                            <input onChange={(e) => setOldData((x) => ({...x , vitalSignature:{...x.vitalSignature, covidshot_1: e.target.value} }))} placeholder='YYYY-MM-DD'  value={oldData.vitalSignature.covidshot_1} id="covidshot_1" className="form-input w-full pr-8" type="text" />
-                            <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                              <span className="text-sm text-slate-400 font-medium px-3">{"Date Time"}</span>
-                            </div>
-                          </div>
-                        </div>
-                        {/* End */}
-                      </div>
-
-                      <div>
-                        {/* Start */}
-                        <div>
-                          <label className="block text-sm font-medium mb-1" htmlFor="covidshot_2">
-                            {"Covid Shot 2"}
-                          </label>
-                          <div className="relative">
-                            <input placeholder='YYYY-MM-DD' onChange={(e) => setOldData((x) => ({...x, vitalSignature:{...x.vitalSignature, covidshot_2: e.target.value} }))} value={oldData.vitalSignature.covidshot_2} id="covidshot_2" className="form-input w-full pr-8" type="text" />
-                            <div className="absolute inset-0 left-auto flex items-center pointer-events-none">
-                              <span className="text-sm text-slate-400 font-medium px-3">{"Date Time"}</span>
-                            </div>
-                          </div>
-                        </div>
-                        {/* End */}
-                      </div>
-                  </div>
-                </div>
+                
 
                 {/* Medical Data Information */}
                 <div>

@@ -2,7 +2,7 @@
   "name": "mosaic-react",
   "version": "0.1.0",
   "scripts": {
-    "dev": "export API_URL='http://localhost:5000'&& vite",
+    "dev": "export API_URL='http://localhost:5000'  && export WEBSITE_DOMAIN='http://localhost:5173' && vite",
     "build": "vite build",
     "preview": "vite preview",
     "production":"sudo docker build -t healthsync-webapp . && sudo docker run -d -p 8080:80 healthsync-webapp"

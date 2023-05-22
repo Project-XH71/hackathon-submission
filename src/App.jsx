@@ -107,6 +107,8 @@ import LoaderPage from './utils/LoadingPage1';
 import CaseEditing from "./pages/medical_case/CaseEditing"
 import LabCaseEditing from "./pages/lab_case/CaseEditing"
 import CaseCreating from "./pages/medical_case/CaseCreating"
+import LabCaseCreating from "./pages/lab_case/CaseCreating"
+
 // import { ReferenceDataContext, ReferenceDataContextProvider } from "./context/ReferenceDataContext"
 
 
@@ -213,17 +215,25 @@ function App() {
                 </SessionAuth>
               </Suspense>
             } />
-            <Route exact path="/case/edit/:id" element={
+             <Route exact path="/case/create" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <CaseCreating />
+                </SessionAuth>
+              </Suspense>
+            } />
+
+            <Route exact path="/case/lab/edit/:id" element={
               <Suspense fallback={<LoaderPage />}>
                 <SessionAuth>
                     <LabCaseEditing />
                 </SessionAuth>
               </Suspense>
             } />
-             <Route exact path="/case/create" element={
+            <Route exact path="/case/lab/create" element={
               <Suspense fallback={<LoaderPage />}>
                 <SessionAuth>
-                    <CaseCreating />
+                    <LabCaseCreating />
                 </SessionAuth>
               </Suspense>
             } />

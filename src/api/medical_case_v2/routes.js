@@ -24,6 +24,13 @@ router.get('/data/:medicalCaseId', verifySession(), controller.getMedicalCaseDat
 router.delete('/data', verifySession(),controller.deleteMedicalCase);
 
 
+router.get("/count", verifySession(), controller.geTotalNumberOfMedicalCases);
+
+router.get("/user/count",verifySession(), controller.getTotalNumberOfUsers);
+
+
+router.get("/search/vpa", verifySession(), controller.searchMedicalCaseByVPA);
+
 // router.get('/roles', verifySession(), rbac(false) ,controller.getMedicalCaseRoles);
 
 module.exports = router;

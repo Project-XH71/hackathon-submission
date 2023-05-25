@@ -16,13 +16,25 @@ module.exports.update = async (req, res) => {
             id: userId
         },
         data:{
-            ...updatedData
+            name: updatedData.name,
+            user_metadata:{
+                connectOrCreate:{
+                    where:{
+                        id: userId
+                    },
+                    create:{
+                        address: updatedData.address,
+                        dateOfBirth: new Date(updatedData.dateOfBirth),
+                        phoneNumber: updatedData.phoneNumber,
+                    }
+                }
+            }
         }
     })
     await UserMetadata.updateUserMetadata(userId, {name: updatedData.name})
     
     return res.status(200).send(user);
-};
+};  
 
 
 

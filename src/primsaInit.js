@@ -9,11 +9,11 @@ const prisma = new PrismaClient({
     ],
   });
 
-prisma.$on("query", async (e) => {
-    console.log(`--------------------------------`)
-    console.log(`QUERY:-> ${e.query}`)
-    console.log(`PARAMS:-> ${e.params}`)
-    console.log(`--------------------------------`)
-});
+// prisma.$on("query", async (e) => {
+//     console.log(`--------------------------------`)
+//     console.log(`QUERY:-> ${e.query}`)
+//     console.log(`PARAMS:-> ${e.params}`)
+//     console.log(`--------------------------------`)
+// });
 
 module.exports = prisma;

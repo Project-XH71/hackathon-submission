@@ -59,10 +59,11 @@ module.exports = {
                             
                             // First we call the original implementation of signUpPOST.
                             let response = await originalImplementation.signUpPOST(input);
-                            let user;
+                            let userCreate;
                             // Post sign up response, we check if it was successful
                             if (response.status === "OK") {
                                 let { id, email } = response.user;
+                                // userCreate = (await prisma.$executeRaw`INSERT INTO "user" (id, email, name) VALUES (${id}, ${email}, 'Unknown') ON CONFLICT (id) DO NOTHING;`)[0]
                                 user = await prisma.user.create({
                                     data:{
                                         id,
@@ -73,7 +74,7 @@ module.exports = {
                                         }
                                     }
                                 })
-                                // // These are the input form fields values that the user used while signing up
+                                // These are the input form fields values that the user used while signing up
                                 
                                 // console.log(formFields);
                                 // TODO: post sign up logic

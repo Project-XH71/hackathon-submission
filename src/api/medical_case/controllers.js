@@ -115,11 +115,10 @@ module.exports.createMedicalCaseData = async (req, res) => {
       const { patientVpa, doctorId, hospitalId } = req.body;
   
       const visit = await prisma.$transaction(async (transaction) => {
-
         // -> Retrieve Patient Metadata, Userdata and VPA Data
         const pvData = await transaction.user_vpa.findUnique({
           where: {
-            vpa: patientVpa,
+            vpa: patientVpa+"@uhi",
           },
           include: {
             user: {
@@ -130,6 +129,7 @@ module.exports.createMedicalCaseData = async (req, res) => {
 
           }
         });
+
   
         // -> Create Medical Case Data with Patient Metadata
         medicalCaseData = {
@@ -196,7 +196,8 @@ module.exports.createMedicalCaseData = async (req, res) => {
             }
           }});
   
-        await prisma.backend_escrow.create({
+        console.log("This is Data: ",visit.medicalCaseId, secretKey, secretVI )
+        await transaction.backend_escrow.create({
           data: {
             key: visit.medicalCaseId,
             secretKey: secretKey,
@@ -251,26 +252,6 @@ module.exports.updateMedicalCaseData = async(req,res) => {
                 },
                 data:{
                     data: cipher,
-                    // medical_case_hospital:{
-                    //     upsert:{
-                    //         create:{
-                    //             hospital:{
-                    //                 connect:{
-                    //                     id: hospitalId
-                    //                 }
-                    //             }
-                    //         },
-                    //         update:{
-                    //             hospitalId: hospitalId
-                    //         },
-                    //         where:{
-                    //             medicalCaseId_hospitalId:{
-                    //                 medicalCaseId: getMedicalCase.id,
-                    //                 hospitalId: hospitalId
-                    //             }
-                    //         }
-                    //     }
-                    // }
                 }
             });
 
@@ -330,15 +311,15 @@ module.exports.getMedicalCaseData = async(req,res) => {
 module.exports.deleteMedicalCase = async(req,res) => {
     try {
         const { medicalCaseId } = req.body;
-
+        console.log("This- ",medicalCaseId)
         const deletedData = await prisma.$transaction(async (transaction) => {
          
-            // Delete Medical Case
+            // Delete Medical Case  
             const deleteMedicalCase = await transaction.medical_case.delete({
-                where: {
+                where:{
                     id: medicalCaseId
                 }
-            });
+            })
 
             // Delete Secret Key
             await transaction.backend_escrow.delete({
@@ -353,6 +334,9 @@ module.exports.deleteMedicalCase = async(req,res) => {
         return res.send({...deletedData, message:"Medical History Deleted"});
     } catch (error) {
         console.log(error);
+        if(error.code === "P2025"){
+            return res.status(404).send({message: "Medical Case Not Found"});
+        }
         return res.status(500).send({message: error.message});
     }
 }
@@ -386,7 +370,7 @@ module.exports.createLabReport = async(req,res) => {
          
 
         // -> Get Medical Case Data
-        const getMedicalCase = await prisma.medical_case.findUnique({
+        const getMedicalCase = await transaction.medical_case.findUnique({
             where:{
                 id: medicalCaseid
             },
@@ -419,7 +403,7 @@ module.exports.createLabReport = async(req,res) => {
 
         const { cipher, secretKey, secretVI } = _secure.encryption.encryptData(JSON.stringify(labReportDataFinal));
 
-        const labReport = await prisma.lab_report.create({
+        const labReport = await transaction.lab_report.create({
             data:{
                 data: cipher,
                 medical_case:{
@@ -430,7 +414,7 @@ module.exports.createLabReport = async(req,res) => {
             }
         }, transaction)
 
-        await prisma.backend_escrow.upsert({
+        await transaction.backend_escrow.upsert({
             where:{
                 key: labReport.id 
             },

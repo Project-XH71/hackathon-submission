@@ -12,7 +12,8 @@ const app = express();
 supertokens.init(require("./config/supertoken"));
 
 app.use(express.json());
-
+// app.use(cors())
+const whitelist = ["http://localhost:5173, http://192.168.29.243:5173"]
 app.use(
   cors({
       origin: "http://localhost:5173",
@@ -55,7 +56,7 @@ app.use("/hospital",require("./api/hospital/routes.js"));
 
 
 app.use("/v2/user", require("./api/user_v2/route.js"));
-app.use("/v2/medical_case", require("./api/medical_case_v2/routes"));
+app.use("/medical_case", require("./api/medical_case/routes.js"));
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

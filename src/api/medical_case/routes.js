@@ -6,6 +6,8 @@ const rbac = require("../_auth/rbac.js");
 
 router.use("/doctor", require("./doctor/routes.js"));
 router.use("/lab_report", require("./lab_report/routes.js"));
+router.use("/lab-report", require("./lab_report/routes.js"));
+
 
 // Route Status Check
 router.get('/', verifySession() ,async(req,res) => {
@@ -22,6 +24,7 @@ router.patch('/data/update', verifySession(), rbac() ,controller.updateMedicalCa
 router.get('/data/:medicalCaseId', verifySession(), rbac(false), controller.getMedicalCaseData);
 
 router.delete('/data', verifySession(), rbac(false) ,controller.deleteMedicalCase);
+router.post('/data/delete', verifySession(), rbac(false) ,controller.deleteMedicalCase);
 
 
 // router.get('/roles', verifySession(), rbac(false) ,controller.getMedicalCaseRoles);

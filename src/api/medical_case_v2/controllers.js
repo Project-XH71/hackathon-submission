@@ -12,6 +12,27 @@ const ageCalculator = (dob) => {
 
 
 
+module.exports.geTotalNumberOfMedicalCases =  async(req,res) => {
+    try {
+        const totalNumberOfMedicalCases = await prisma.$queryRaw`SELECT COUNT(*) FROM (SELECT "public"."medical_case"."id" FROM "public"."medical_case" WHERE 1=1 OFFSET 0) AS "sub"`
+        return res.send({totalNumberOfMedicalCases: Number.parseInt(totalNumberOfMedicalCases[0].count)});
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
+
+
+module.exports.getTotalNumberOfUsers = async(req,res) => {
+    try {
+        const totalNumberOfUsers = await prisma.$queryRaw`SELECT COUNT(*) FROM (SELECT "public"."user"."id" FROM "public"."user" WHERE 1=1 OFFSET 0) AS "sub"`
+        return res.send({totalNumberOfUsers: Number.parseInt(totalNumberOfUsers[0].count)});
+
+    } catch (error) {
+        return res.status(500).send({message: error.message})
+    }
+}
+
+
 module.exports.createMedicalCaseData = async (req, res) => {
     let medicalCaseData;
     try {
@@ -332,6 +353,16 @@ module.exports.createLabReport = async(req,res) => {
 
 
 
+module.exports.searchMedicalCaseByVPA = async(req,res) => {
+    try {
+        const { vpa } = req.body;
+        const medicalCases = await prisma.$queryRaw`select medical_case.* , uv.vpa from "medical_case" inner join patient on medical_case."patientId" = patient.id inner join "user" u on patient."userId" = u.id inner join user_vpa uv on u.id = uv."userId" where uv.vpa = ${vpa};`
+        // console.log(medicalCases);
+        return res.send(medicalCases);
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}
 
 
 

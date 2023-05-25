@@ -52,7 +52,7 @@ app.use("/vpa",require("./api/vpa/routes.js"));
 app.use("/patient",require("./api/patient/routes.js"));
 app.use("/medical-case",require("./api/medical_case/routes.js"));
 app.use("/hospital",require("./api/hospital/routes.js"));
-
+app.use("/appointment",require("./api/appointment/routes.js"));
 
 
 app.use("/v2/user", require("./api/user_v2/route.js"));

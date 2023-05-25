@@ -36,6 +36,7 @@ model doctor {
   metadata                     Json?
   createdAt                    DateTime                       @default(now()) @db.Timestamptz(6)
   updatedAt                    DateTime                       @default(now()) @db.Timestamptz(6)
+  appointment                  appointment[]
   backend_pat_doc_verification backend_pat_doc_verification[]
   user                         user                           @relation(fields: [userId], references: [id], onDelete: Cascade)
   doctor_hospital              doctor_hospital[]
@@ -83,6 +84,7 @@ model patient {
   metadata                     Json?
   createdAt                    DateTime                       @default(now()) @db.Timestamptz(6)
   updatedAt                    DateTime                       @default(now()) @db.Timestamptz(6)
+  appointment                  appointment[]
   backend_pat_doc_verification backend_pat_doc_verification[]
   medical_case                 medical_case[]
   user                         user                           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -215,6 +217,10 @@ model medical_case_hospital {
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model medication {
   id        Int?
   name      Int?
@@ -223,4 +229,30 @@ model medication {
   patientId Int?
 
   @@ignore
+}
+
+model appointment {
+  id                 String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId          String
+  doctorId           String?
+  type               String
+  status             String
+  createdAt          DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime            @default(now()) @db.Timestamptz(6)
+  description        String?
+  time               DateTime?           @db.Timestamptz(6)
+  doctor             doctor?             @relation(fields: [doctorId], references: [id], onDelete: NoAction)
+  patient            patient             @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  remote_appointment remote_appointment?
+}
+
+model remote_appointment {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  locationId    String
+  appointmentId String      @unique @db.Uuid
+  createdAt     DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime    @default(now()) @db.Timestamptz(6)
+  long          String
+  lat           String
+  appointment   appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
 }

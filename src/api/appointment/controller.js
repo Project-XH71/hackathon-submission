@@ -193,6 +193,34 @@ module.exports.fetchAppointments = async (req, res) => {
 
 
         }
+
+        else {
+            const { appointmentId } = req.body;
+            const appointment = await prisma.appointment.findUnique({
+                where:{
+                    id: appointmentId
+                },
+                include:{
+                    doctor:{
+                        include:{
+                            user: true
+                        }
+                    },
+                    patient:{
+                        include:{
+                            user: {
+                                include: {
+                                    user_vpa: true
+                                }
+                            }
+
+                        }
+                    }
+                }
+            });
+
+            return res.status(200).send(appointment);
+        }
         
 
         return res.status(200).send(appointments)

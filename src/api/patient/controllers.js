@@ -12,7 +12,7 @@ module.exports.getPatientInformation = async(req,res) => {
                 id: patientId
             },
             include:{
-                medical_case: true,
+                // medical_case: true,
                 user:{
                     include:{
                         user_metadata: true,

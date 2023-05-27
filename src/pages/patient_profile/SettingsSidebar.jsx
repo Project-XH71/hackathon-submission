@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
-function SettingsSidebar() {
+function  SettingsSidebar() {
 
   const location = useLocation();
   const { pathname } = location;
@@ -25,7 +25,7 @@ function SettingsSidebar() {
               <svg className={`w-4 h-4 shrink-0 fill-current text-slate-400 mr-2 ${pathname.includes('/settings/notifications') && 'text-indigo-400'}`} viewBox="0 0 16 16">
                 <path d="M14.3.3c.4-.4 1-.4 1.4 0 .4.4.4 1 0 1.4l-8 8c-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.4-.4-.4-1 0-1.4l8-8zM15 7c.6 0 1 .4 1 1 0 4.4-3.6 8-8 8s-8-3.6-8-8 3.6-8 8-8c.6 0 1 .4 1 1s-.4 1-1 1C4.7 2 2 4.7 2 8s2.7 6 6 6 6-2.7 6-6c0-.6.4-1 1-1z" />
               </svg>
-              <span className={`text-sm font-medium ${pathname.includes('/settings/notifications') ? 'text-indigo-500' : 'hover:text-slate-700'}`}>My Notifications</span>
+              <span className={`text-sm font-medium ${pathname.includes('/settings/notifications') ? 'text-indigo-500' : 'hover:text-slate-700'}`}>Medical Cases</span>
             </NavLink>
           </li>
           <li className="mr-0.5 md:mr-0 md:mb-0.5">

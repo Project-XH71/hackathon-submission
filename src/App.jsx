@@ -118,7 +118,7 @@ import TrafficAlert from "./pages/ambulance/TrafficAlert";
 // Appointments
 
 import Appointment from "./pages/appointments/AppointmentTablePage";
-
+import AppointmentEditPage from "./pages/appointments/AppointmentEditPage";
 // 
 
 import PatientProfile from "./pages/patient_profile/PatientProfile";
@@ -270,6 +270,14 @@ function App() {
               <Suspense fallback={<LoaderPage />}>
                 <SessionAuth>
                     <PatientProfile />
+                </SessionAuth>
+              </Suspense>
+            } />
+
+            <Route exact path="/appointments/edit/:id" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <AppointmentEditPage />
                 </SessionAuth>
               </Suspense>
             } />

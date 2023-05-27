@@ -9,3 +9,5 @@ diabetesData = read_csv('diabetes.csv')
 import seaborn as sns
 sns.scatterplot(x = 'Glucose', y = 'Insulin', data = diabetesData, alpha = 0.7, hue = 'Outcome')
 pyplot.show()
+
+print("Hello World")

@@ -16,6 +16,8 @@ router.post('/allot', verifySession() ,controller.allotPatientId);
 
 router.post("/scan-qr",verifySession(), controller.scanDoctorQR)
 
+// Get Patient Information
+router.post('/get', verifySession() ,controller.getPatientInformation);
 
 
 

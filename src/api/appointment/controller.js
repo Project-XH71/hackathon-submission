@@ -141,12 +141,22 @@ module.exports.fetchAppointments = async (req, res) => {
             })
         }
         else if(filter === "get-doctor-appointments"){
-            const { doctorId } = req.body;
+            let userId = req.session.getUserId();
+            
+            console.log("get-doctor-appointments ",userId);
+            const doctor = await prisma.doctor.findUnique({
+                where:{
+                    userId: userId
+                },
+                select:{
+                    id: true
+                }
+            });
+
+            console.log(doctor)
             appointments = await prisma.appointment.findMany({
                 where:{
-                    doctor:{
-                        userId: userId
-                    }
+                    doctorId: doctor.id
                 },
                 include:{
                     doctor:{

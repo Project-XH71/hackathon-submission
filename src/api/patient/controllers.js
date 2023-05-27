@@ -2,6 +2,35 @@ const prisma = require("../../primsaInit.js");
 const { v4: uuidv4 } = require('uuid');
 const UserMetadata = require("supertokens-node/recipe/usermetadata");
 
+
+module.exports.getPatientInformation = async(req,res) => {
+    try {
+        const { patientId } = req.body;
+
+        const patient = await prisma.patient.findUnique({
+            where:{
+                id: patientId
+            },
+            include:{
+                medical_case: true,
+                user:{
+                    include:{
+                        user_metadata: true,
+                        user_vpa: true
+                    }
+                }
+
+            }
+        });
+
+        return res.status(200).json({...patient})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: error.message})
+    }
+}
+
 module.exports.allotPatientId = async(req,res) => {
     try {
         const userId = req.session.getUserId();

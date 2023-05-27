@@ -109,12 +109,22 @@ import LabCaseEditing from "./pages/lab_case/CaseEditing"
 import CaseCreating from "./pages/medical_case/CaseCreating"
 import LabCaseCreating from "./pages/lab_case/CaseCreating"
 
-// import { ReferenceDataContext, ReferenceDataContextProvider } from "./context/ReferenceDataContext"
 
+// First Reponseders
+
+import TrafficAlert from "./pages/ambulance/TrafficAlert";
+
+
+// Appointments
+
+import Appointment from "./pages/appointments/AppointmentTablePage";
+
+// 
+
+import PatientProfile from "./pages/patient_profile/PatientProfile";
 
 SuperTokens.init({
     appInfo: {
-        // learn more about this on https://supertokens.com/docs/emailpassword/appinfo
         appName: "Hackathon",
         apiDomain: "http://localhost:5000",
         websiteDomain: process.env.WEBSITE_DOMAIN,
@@ -140,26 +150,14 @@ SuperTokens.init({
     ]
 });
 
-// const LoaderPage = () => {
-//   return(
-//     <ProgressBar
-//   height="80"
-//   width="80"
-//   ariaLabel="progress-bar-loading"
-//   wrapperStyle={{}}
-//   wrapperClass="progress-bar-wrapper"
-//   borderColor = '#F4442E'
-//   barColor = '#51E5FF'
-// />
-//   )
-// }
 
 function App() {
 
   const location = useLocation();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-
+  const hospital = useSelector((state) => state.hospital)
+  
 
   useEffect(() => {
     document.querySelector('html').style.scrollBehavior = 'auto'
@@ -168,14 +166,28 @@ function App() {
   }, [location.pathname]); // triggered on route change
 
   useEffect(() => {
-    dispatch(fetchUser())
-    dispatch(fetchHospital())
+
+    const getUser = async() => {
+      if(await Session.doesSessionExist()){
+        dispatch(fetchUser())
+        // if(alphax.data.roles.includes("doctor")){
+        //   dispatch(fetchHospital())
+        // }
+      }
+    }
+
+    getUser();
   },[dispatch]);
 
-  if(user.status === "loading"){
-    return(<><LoaderPage/></>)
+
+  if(!user) return <LoaderPage/>
+  if(user){
+    if(user.data && user.data.roles ){
+      if(user.data.roles.includes("doctor")){
+        if(!hospital.data) dispatch(fetchHospital())
+      }
+    }
   }
-  console.log(user)
   return (
     <>
       <SuperTokensWrapper>
@@ -234,6 +246,30 @@ function App() {
               <Suspense fallback={<LoaderPage />}>
                 <SessionAuth>
                     <LabCaseCreating />
+                </SessionAuth>
+              </Suspense>
+            } />
+
+            <Route exact path="/traffic/alert" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <TrafficAlert />
+                </SessionAuth>
+              </Suspense>
+            } />
+
+            <Route exact path="/appointments" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <Appointment />
+                </SessionAuth>
+              </Suspense>
+            } />
+
+            <Route exact path="/patient/profile/:id" element={
+              <Suspense fallback={<LoaderPage />}>
+                <SessionAuth>
+                    <PatientProfile />
                 </SessionAuth>
               </Suspense>
             } />

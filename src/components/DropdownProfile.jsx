@@ -4,12 +4,14 @@ import Transition from '../utils/Transition';
 import { signOut } from "supertokens-auth-react/recipe/emailpassword";
 import UserAvatar from '../images/user-avatar-32.png';
 import { useSelector } from 'react-redux';
+import LoaderPage from '../utils/LoadingPage1';
 
 function DropdownProfile({
   align
 }) {
 
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.data);
+  if(!user) return <LoaderPage />;
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const trigger = useRef(null);
@@ -47,7 +49,7 @@ function DropdownProfile({
       >
         <img className="w-8 h-8 rounded-full" src={UserAvatar} width="32" height="32" alt="User" />
         <div className="flex items-center truncate">
-          <span className="truncate ml-2 text-sm font-medium group-hover:text-slate-800">{user.data.user.name}</span>
+          <span className="truncate ml-2 text-sm font-medium group-hover:text-slate-800">{user.user.name}</span>
           <svg className="w-3 h-3 shrink-0 ml-1 fill-current text-slate-400" viewBox="0 0 12 12">
             <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
           </svg>

@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 
 import SidebarLinkGroup from './SidebarLinkGroup';
 import { useDispatch, useSelector } from 'react-redux';
-
+import LoaderPage from '../utils/LoadingPage1';
 
 
 
@@ -13,12 +13,14 @@ function Sidebar({
   sidebarOpen,
   setSidebarOpen
 }) {
-  // const roles = (useSelector((state) => state.user.data.roles));
-  const roles=["doctor"]
+  const user = (useSelector((state) => state.user.data));
+  if(!user) return <LoaderPage/>
+  const roles= user.roles;
   const SidebarConfiguration = [
     {
       "op":"group",
       "title":"Hospital Administration",
+      "requireRole":["doctor"],
       "sub_menu":[
         {
           "op":"sub_group",
@@ -43,17 +45,7 @@ function Sidebar({
                     </svg>
                 );
               }
-            },
-            // {
-            //   "op":"sub_group_2",
-            //   "title":"Hospital Admin",
-            //   "path":"/dashboard"
-            // },
-            // {
-            //   "op":"sub_group_2",
-            //   "title":"Goverment Admin",
-            //   "path":"/dashboard"
-            // }
+            }
           ]
         },
         {
@@ -94,6 +86,24 @@ function Sidebar({
             </svg>
             );
           }
+        },
+        {
+          "op":"sub_link",
+          "title":"Appointment Case",
+          "path":"case",
+          "requireRole":["doctor"],
+          "to":"/appointments",
+          logo: () => {
+            return(
+              <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+              <path className={`fill-current text-slate-600 ${pathname.includes('calendar') && 'text-indigo-500'}`} d="M1 3h22v20H1z" />
+              <path
+                className={`fill-current text-slate-400 ${pathname.includes('calendar') && 'text-indigo-300'}`}
+                d="M21 3h2v4H1V3h2V1h4v2h10V1h4v2Z"
+              />
+            </svg>
+            );
+          }
         }
       ],
       
@@ -101,6 +111,7 @@ function Sidebar({
     {
       "op":"group",
       "title":"Lab Administration",
+      "requireRole":["doctor"],
       "sub_menu":[
         {
           "op":"sub_link",
@@ -192,29 +203,8 @@ function Sidebar({
     {
       "op":"group",
       "title":"Profile Configuration",
+      "requireRole":["doctor"],
       "sub_menu":[
-        // {
-        //   "op":"sub_group",
-        //   "title":"Dashboard",
-        //   "path":"dashboard",
-        //   "sub_menu_2":[
-        //     {
-        //       "op":"sub_group_2",
-        //       "title":"User Admin",
-        //       "path":"/dashboard/home"
-        //     },
-        //     {
-        //       "op":"sub_group_2",
-        //       "title":"Hospital Admin",
-        //       "path":"/dashboard"
-        //     },
-        //     {
-        //       "op":"sub_group_2",
-        //       "title":"Goverment Admin",
-        //       "path":"/dashboard"
-        //     }
-        //   ]
-        // },
         {
           "op":"sub_link",
           "title":"System Settings",
@@ -249,7 +239,7 @@ function Sidebar({
           "title":"My Profile",
           "path":"case",
           "requireRole":["doctor"],
-          "to":"/case/edit/:id",
+          "to":"/patient/profile/5d2ec659-9e6f-483a-ab91-d2a7e0bccad8",
           logo: () => {
             return(
               <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
@@ -267,7 +257,80 @@ function Sidebar({
         }
       ],
       
-    }
+    },
+    {
+      "op":"group",
+      "title":"First Response Administration",
+      "requireRole":["ambulance-driver"],
+      "sub_menu":[
+        {
+          "op":"sub_group",
+          "title":"Dashboard",
+          "path":"dashboard",
+          "sub_menu_2":[
+            {
+              "op":"sub_group_2",
+              "title":"Analytics",
+              "path":"/dashboard/home",
+              logo: () => {
+                return(
+                  <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+                          <path
+                            className={`fill-current text-slate-600 ${pathname.includes('inbox') && 'text-indigo-500'}`}
+                            d="M16 13v4H8v-4H0l3-9h18l3 9h-8Z"
+                          />
+                          <path
+                            className={`fill-current text-slate-400 ${pathname.includes('inbox') && 'text-indigo-300'}`}
+                            d="m23.72 12 .229.686A.984.984 0 0 1 24 13v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1v-8c0-.107.017-.213.051-.314L.28 12H8v4h8v-4H23.72ZM13 0v7h3l-4 5-4-5h3V0h2Z"
+                          />
+                    </svg>
+                );
+              }
+            }
+          ]
+        },
+        {
+          "op":"sub_link",
+          "title":"Traffic Alert",
+          "path":"traffic-alert",
+          "requireRole":["ambulance-driver"],
+          "to":"/traffic/alert",
+          logo: () => {
+            return(
+              <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+                      <path
+                        className={`fill-current text-slate-600 ${pathname.includes('inbox') && 'text-indigo-500'}`}
+                        d="M16 13v4H8v-4H0l3-9h18l3 9h-8Z"
+                      />
+                      <path
+                        className={`fill-current text-slate-400 ${pathname.includes('inbox') && 'text-indigo-300'}`}
+                        d="m23.72 12 .229.686A.984.984 0 0 1 24 13v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1v-8c0-.107.017-.213.051-.314L.28 12H8v4h8v-4H23.72ZM13 0v7h3l-4 5-4-5h3V0h2Z"
+                      />
+                </svg>
+            );
+          }
+        },
+        {
+          "op":"sub_link",
+          "title":"Medical Case",
+          "path":"case",
+          "requireRole":["doctor"],
+          "to":"/case/edit/:id",
+          logo: () => {
+            return(
+              <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+              <path className={`fill-current text-slate-600 ${pathname.includes('calendar') && 'text-indigo-500'}`} d="M1 3h22v20H1z" />
+              <path
+                className={`fill-current text-slate-400 ${pathname.includes('calendar') && 'text-indigo-300'}`}
+                d="M21 3h2v4H1V3h2V1h4v2h10V1h4v2Z"
+              />
+            </svg>
+            );
+          }
+        }
+      ],
+      
+    },
   ]
   
 
@@ -374,121 +437,124 @@ function Sidebar({
         <div className="space-y-8">
 
           { SidebarConfiguration.map((element, index) => {
-            return (
-              <div key={index}>
-                <h3 className="text-xs uppercase text-slate-500 font-semibold pl-3">
-                  <span className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6" aria-hidden="true">
-                    •••
-                  </span>
-                  <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">{element.title}</span>
-                </h3>
-
-                <ul className="mt-3">
-                { element.sub_menu.map((sub_element, sub_index) => {
-                  if(sub_element.op == "sub_group"){
-                    return(
+            if(element.op == "group" && element.requireRole.some(ai => roles.includes(ai))){
+              return (
+                <div key={index}>
+                  <h3 className="text-xs uppercase text-slate-500 font-semibold pl-3">
+                    <span className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6" aria-hidden="true">
+                      •••
+                    </span>
                     
-                      <SidebarLinkGroup activecondition={pathname === '/' || pathname.includes(`${sub_element.path}`)}>
-                      {(handleClick, open) => {
-                        return (
-                          <React.Fragment key={sub_index}>
-                            <a
-                              href="#0"
-                              className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
-                                (pathname === '/' || pathname.includes(`${sub_element.path}`)) && 'hover:text-slate-200'
-                              }`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                sidebarExpanded ? handleClick() : setSidebarExpanded(true);
-                              }}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center">
-                                  <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-                                    <path
-                                      className={`fill-current text-slate-400 ${
-                                        (pathname === '/' || pathname.includes(`${sub_element.path}`)) && '!text-indigo-500'
-                                      }`}
-                                      d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0z"
-                                    />
-                                    <path
-                                      className={`fill-current text-slate-600 ${(pathname === '/' || pathname.includes(`${sub_element.path}`)) && 'text-indigo-600'}`}
-                                      d="M12 3c-4.963 0-9 4.037-9 9s4.037 9 9 9 9-4.037 9-9-4.037-9-9-9z"
-                                    />
-                                    <path
-                                      className={`fill-current text-slate-400 ${(pathname === '/' || pathname.includes(`${sub_element.path}`)) && 'text-indigo-200'}`}
-                                      d="M12 15c-1.654 0-3-1.346-3-3 0-.462.113-.894.3-1.285L6 6l4.714 3.301A2.973 2.973 0 0112 9c1.654 0 3 1.346 3 3s-1.346 3-3 3z"
-                                    />
-                                  </svg>
-                                  <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                    {sub_element.title}
-                                  </span>
-                                </div>
-                                {/* Icon */}
-                                <div className="flex shrink-0 ml-2">
-                                 {sub_element.logo}
-                                </div>
-                              </div>
-                            </a>
-                            <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                              <ul className={`pl-9 mt-1 ${!open && 'hidden'}`}>
+                    <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">{element.title}</span>
+                  </h3>
 
-                                {sub_element.sub_menu_2.map((sub_sub_element, sub_sub_index) => {
-                                  return(
-                                      <li className="mb-1 last:mb-0" key={sub_sub_index}>
-                                        <NavLink
-                                          end
-                                          to={sub_sub_element.path}
-                                          className={({ isActive }) =>
-                                            'block text-slate-400 hover:text-slate-200 transition duration-150 truncate ' + (isActive ? '!text-indigo-500' : '')
-                                          }
-                                        >
-                                          <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                            {sub_sub_element.title}
-                                          </span>
-                                        </NavLink>
-                                      </li>
-                                  );
-                                })}
-                              </ul>
-                            </div>
-                          </React.Fragment>
-                        );
-                      }}
-                    </SidebarLinkGroup>
-                  )
-                  } 
-                  if(sub_element.op == "sub_link" && sub_element.requireRole.some( ai => roles.includes(ai) )){
+                  <ul className="mt-3">
+                  { element.sub_menu.map((sub_element, sub_index) => {
+                    if(sub_element.op == "sub_group"){
                       return(
-                          <li key={sub_index} className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${pathname.includes(`${sub_element.path}`) && 'bg-slate-900'}`}>
-                              <NavLink
-                                end
-                                to={sub_element.to}
+                      
+                        <SidebarLinkGroup activecondition={pathname === '/' || pathname.includes(`${sub_element.path}`)}>
+                        {(handleClick, open) => {
+                          return (
+                            <React.Fragment key={sub_index}>
+                              <a
+                                href="#0"
                                 className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
-                                  pathname.includes(`${sub_element.path}`) && 'hover:text-slate-200'
+                                  (pathname === '/' || pathname.includes(`${sub_element.path}`)) && 'hover:text-slate-200'
                                 }`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  sidebarExpanded ? handleClick() : setSidebarExpanded(true);
+                                }}
                               >
                                 <div className="flex items-center justify-between">
-                                  <div className="grow flex items-center">
-                                    <sub_element.logo />
+                                  <div className="flex items-center">
+                                    <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+                                      <path
+                                        className={`fill-current text-slate-400 ${
+                                          (pathname === '/' || pathname.includes(`${sub_element.path}`)) && '!text-indigo-500'
+                                        }`}
+                                        d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0z"
+                                      />
+                                      <path
+                                        className={`fill-current text-slate-600 ${(pathname === '/' || pathname.includes(`${sub_element.path}`)) && 'text-indigo-600'}`}
+                                        d="M12 3c-4.963 0-9 4.037-9 9s4.037 9 9 9 9-4.037 9-9-4.037-9-9-9z"
+                                      />
+                                      <path
+                                        className={`fill-current text-slate-400 ${(pathname === '/' || pathname.includes(`${sub_element.path}`)) && 'text-indigo-200'}`}
+                                        d="M12 15c-1.654 0-3-1.346-3-3 0-.462.113-.894.3-1.285L6 6l4.714 3.301A2.973 2.973 0 0112 9c1.654 0 3 1.346 3 3s-1.346 3-3 3z"
+                                      />
+                                    </svg>
                                     <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                       {sub_element.title}
                                     </span>
                                   </div>
-                                  {/* Badge */}
-                                  {/* <div className="flex flex-shrink-0 ml-2">
-                                    <span className="inline-flex items-center justify-center h-5 text-xs font-medium text-white bg-indigo-500 px-2 rounded">4</span>
-                                  </div> */}
+                                  {/* Icon */}
+                                  <div className="flex shrink-0 ml-2">
+                                  {sub_element.logo}
+                                  </div>
                                 </div>
-                              </NavLink>
-                            </li>
+                              </a>
+                              <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                                <ul className={`pl-9 mt-1 ${!open && 'hidden'}`}>
+
+                                  {sub_element.sub_menu_2.map((sub_sub_element, sub_sub_index) => {
+                                    return(
+                                        <li className="mb-1 last:mb-0" key={sub_sub_index}>
+                                          <NavLink
+                                            end
+                                            to={sub_sub_element.path}
+                                            className={({ isActive }) =>
+                                              'block text-slate-400 hover:text-slate-200 transition duration-150 truncate ' + (isActive ? '!text-indigo-500' : '')
+                                            }
+                                          >
+                                            <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                              {sub_sub_element.title}
+                                            </span>
+                                          </NavLink>
+                                        </li>
+                                    );
+                                  })}
+                                </ul>
+                              </div>
+                            </React.Fragment>
+                          );
+                        }}
+                      </SidebarLinkGroup>
                     )
-                  }
-                  
-                })}
-                </ul>
-              </div>
-            )
+                    } 
+                    if(sub_element.op == "sub_link" && sub_element.requireRole.some( ai => roles.includes(ai) )){
+                        return(
+                            <li key={sub_index} className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${pathname.includes(`${sub_element.path}`) && 'bg-slate-900'}`}>
+                                <NavLink
+                                  end
+                                  to={sub_element.to}
+                                  className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
+                                    pathname.includes(`${sub_element.path}`) && 'hover:text-slate-200'
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="grow flex items-center">
+                                      <sub_element.logo />
+                                      <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                        {sub_element.title}
+                                      </span>
+                                    </div>
+                                    {/* Badge */}
+                                    {/* <div className="flex flex-shrink-0 ml-2">
+                                      <span className="inline-flex items-center justify-center h-5 text-xs font-medium text-white bg-indigo-500 px-2 rounded">4</span>
+                                    </div> */}
+                                  </div>
+                                </NavLink>
+                              </li>
+                      )
+                    }
+                    
+                  })}
+                  </ul>
+                </div>
+              )
+            }
           })}
 
           

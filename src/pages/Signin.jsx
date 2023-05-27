@@ -1,17 +1,60 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
+import { signIn } from "supertokens-web-js/recipe/emailpassword";
 
 import AuthImage from '../images/auth-image.jpg';
 import AuthDecoration from '../images/auth-decoration.png';
 
 function Signin() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [warningMessage, setWarningMessage] = useState("Experimental Features Ahead!!");
+
+  async function signInClicked() {
+      try {
+          let response = await signIn({
+              formFields: [{
+                  id: "email",
+                  value: email
+              }, {
+                  id: "password",
+                  value: password
+              }]
+          })
+
+          if (response.status === "FIELD_ERROR") {
+              response.formFields.forEach(formField => {
+                  if (formField.id === "email") {
+                      // Email validation failed (for example incorrect email syntax).
+                      setWarningMessaget(formField.error)
+                  }
+              })
+          } else if (response.status === "WRONG_CREDENTIALS_ERROR") {
+            setWarningMessage("Email password combination is incorrect.")
+          } else {
+              // sign in successful. The session tokens are automatically handled by
+              // the frontend SDK.
+              window.location.href = "/"
+          }
+      } catch (err) {
+          if (err.isSuperTokensGeneralError === true) {
+              // this may be a custom error message sent from the API by you.
+              window.alert(err.message);
+          } else {
+              window.alert(err.message);
+          }
+      }
+  }
+
+
   return (
     <main className="bg-white">
 
       <div className="relative md:flex">
 
         {/* Content */}
-        <div className="md:w-1/2">
+        <div className="md:w-full">
           <div className="min-h-screen h-full flex flex-col after:flex-1">
 
             {/* Header */}
@@ -46,18 +89,21 @@ function Signin() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="email">Email Address</label>
-                    <input id="email" className="form-input w-full" type="email" />
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} id="email" className="form-input w-full" type="email" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
-                    <input id="password" className="form-input w-full" type="password" autoComplete="on" />
+                    <input value={password} onChange={(e) => setPassword(e.target.value)} id="password" className="form-input w-full" type="password" autoComplete="on" />
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-6">
                   <div className="mr-1">
                     <Link className="text-sm underline hover:no-underline" to="/reset-password">Forgot Password?</Link>
                   </div>
-                  <Link className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3" to="/">Sign In</Link>
+                  <div className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3" onClick={(e) => {
+                    e.preventDefault();
+                    signInClicked();
+                  }}>Sign In</div>
                 </div>
               </form>
               {/* Footer */}
@@ -72,7 +118,7 @@ function Signin() {
                       <path d="M10.28 1.28L3.989 7.575 1.695 5.28A1 1 0 00.28 6.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 1.28z" />
                     </svg>
                     <span className="text-sm">
-                      To support you during the pandemic super pro features are free until March 31st.
+                      {warningMessage}
                     </span>
                   </div>
                 </div>
@@ -83,10 +129,10 @@ function Signin() {
         </div>
 
         {/* Image */}
-        <div className="hidden md:block absolute top-0 bottom-0 right-0 md:w-1/2" aria-hidden="true">
+        {/* <div className="hidden md:block absolute top-0 bottom-0 right-0 md:w-1/2" aria-hidden="true">
           <img className="object-cover object-center w-full h-full" src={AuthImage} width="760" height="1024" alt="Authentication" />
           <img className="absolute top-1/4 left-0 -translate-x-1/2 ml-8 hidden lg:block" src={AuthDecoration} width="218" height="224" alt="Authentication decoration" />
-        </div>
+        </div> */}
 
       </div>
 

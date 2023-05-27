@@ -25,8 +25,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const LoaderPage = () => {
   return(
-      <div class="flex h-screen">
-        <div class="m-auto">
+      <div className="flex h-screen">
+        <div className="m-auto">
           <InfinitySpin 
             width='200'
             color="#FF5733"
@@ -39,9 +39,8 @@ function Dashboard() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  if(user.loading) return <LoaderPage />
-  if(!user.loading) {
+  const user = useSelector((state) => state.user.data);
+  if(!user) return <LoaderPage />
   return (
     <div className="flex h-screen overflow-hidden">
 
@@ -122,7 +121,7 @@ function Dashboard() {
       </Suspense>
     </div>
   );
-  }
+  
 }
 
 export default Dashboard;

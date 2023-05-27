@@ -3,6 +3,7 @@ import React from 'react';
 function WelcomeBanner({user}) {
   const welcomeTypes = ['Good morning', 'Good afternoon', 'Good evening'];
   const hour = new Date().getHours();
+  console.log("Im user", user)
   let welcomeText = '';
   if (hour < 12) welcomeText = welcomeTypes[0];
   else if (hour < 16) welcomeText = welcomeTypes[1];
@@ -54,7 +55,7 @@ function WelcomeBanner({user}) {
 
       {/* Content */}
       <div className="relative">
-        <h1 className="text-2xl md:text-3xl text-slate-800 font-bold mb-1">{welcomeText}, {user.data.user.name} 👋</h1>
+        <h1 className="text-2xl md:text-3xl text-slate-800 font-bold mb-1">{welcomeText}, {user.user.name} 👋</h1>
         <p>Here is what’s happening with your projects today:</p>
       </div>
 

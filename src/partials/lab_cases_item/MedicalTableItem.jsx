@@ -7,7 +7,7 @@ function InvoicesTableItem(props) {
 
   // Handle button click
   const handleEditButtonClick = (id) => {
-    navigate(`/case/edit/${id}`)
+    navigate(`/case/lab/edit/${id}`)
     // window.location.href = `/case/edit/${id}`; // Redirect to URL with 'id' parameter
   };
 

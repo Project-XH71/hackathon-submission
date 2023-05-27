@@ -2,10 +2,10 @@
   "name": "mosaic-react",
   "version": "0.1.0",
   "scripts": {
-    "dev": "export API_URL='http://localhost:5000'  && export WEBSITE_DOMAIN='http://localhost:5173' && vite",
+    "dev": "export API_URL='http://localhost:5000'  && export WEBSITE_DOMAIN='http://localhost:5173' && vite --host",
     "build": "vite build",
     "preview": "vite preview",
-    "production":"sudo docker build -t healthsync-webapp . && sudo docker run -d -p 8080:80 healthsync-webapp"
+    "production": "sudo docker build -t healthsync-webapp . && sudo docker run -d -p 8080:80 healthsync-webapp"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
@@ -13,6 +13,7 @@
     "axios": "^1.3.5",
     "chart.js": "^3.8.0",
     "chartjs-adapter-moment": "^1.0.0",
+    "google-map-react": "^2.2.1",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

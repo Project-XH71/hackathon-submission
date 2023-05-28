@@ -1,0 +1,154 @@
+{
+  "medical_cases":[
+    {
+        "patientName": "John Doe",
+        "patientAge": 45,
+        "patientGender": "Male",
+        "patientEthnicity": "Caucasian",
+        "patientAddress": "123 Main Street, Cityville, USA",
+        "diagnosis": {
+          "condition": "Hypertension",
+          "diagnosisDate": "2023-05-17",
+          "doctorName": "Dr. Jane Smith",
+          "notes": "Patient presents with high blood pressure readings consistently over the past month. Prescribed medication and advised dietary changes.",
+          "treatment": "Prescription medication, lifestyle modifications",
+          "followUpDate": "2023-06-01"
+        }
+    },
+    {
+        "patientName": "Jane Smith",
+        "patientAge": 32,
+        "patientGender": "Female",
+        "patientEthnicity": "Asian",
+        "patientAddress": "456 Elm Street, Townsville, USA",
+        "diagnosis": {
+          "condition": "Diabetes",
+          "diagnosisDate": "2023-04-22",
+          "doctorName": "Dr. Michael Johnson",
+          "notes": "Patient's fasting blood sugar levels indicate diabetes. Prescribed medication and recommended dietary changes.",
+          "treatment": "Insulin therapy, diet control",
+          "followUpDate": "2023-07-15"
+        }
+      },
+      {
+        "patientName": "Emily Davis",
+        "patientAge": 60,
+        "patientGender": "Female",
+        "patientEthnicity": "African American",
+        "patientAddress": "789 Oak Avenue, Villagetown, USA",
+        "diagnosis": {
+          "condition": "Osteoarthritis",
+          "diagnosisDate": "2023-03-10",
+          "doctorName": "Dr. David Anderson",
+          "notes": "Patient reports joint pain and stiffness. Diagnosed with osteoarthritis in the knees. Prescribed pain medication and recommended physiotherapy.",
+          "treatment": "Pain medication, physiotherapy",
+          "followUpDate": "2023-05-25"
+        }
+      },
+      {
+        "patientName": "Emily Davis",
+        "patientAge": 60,
+        "patientGender": "Female",
+        "patientEthnicity": "African American",
+        "patientAddress": "789 Oak Avenue, Villagetown, USA",
+        "diagnosis": {
+          "condition": "Osteoarthritis",
+          "diagnosisDate": "2023-03-10",
+          "doctorName": "Dr. David Anderson",
+          "notes": "Patient reports joint pain and stiffness. Diagnosed with osteoarthritis in the knees. Prescribed pain medication and recommended physiotherapy.",
+          "treatment": "Pain medication, physiotherapy",
+          "followUpDate": "2023-05-25"
+        }
+      },
+      {
+        "patientName": "Michael Brown",
+        "patientAge": 50,
+        "patientGender": "Male",
+        "patientEthnicity": "Caucasian",
+        "patientAddress": "987 Maple Road, Citytown, USA",
+        "diagnosis": {
+          "condition": "Coronary Artery Disease",
+          "diagnosisDate": "2023-01-12",
+          "doctorName": "Dr. Elizabeth Davis",
+          "notes": "Patient presents with chest pain and shortness of breath. Diagnosed with coronary artery disease. Prescribed medication and advised lifestyle modifications.",
+          "treatment": "Medication, lifestyle modifications",
+          "followUpDate": "2023-03-15"
+        }
+      },
+      {
+        "patientName": "David Wilson",
+        "patientAge": 65,
+        "patientGender": "Male",
+        "patientEthnicity": "Caucasian",
+        "patientAddress": "654 Cedar Lane, Towndale, USA",
+        "diagnosis": {
+          "condition": "Cancer",
+          "diagnosisDate": "2023-07-05",
+          "doctorName": "Dr. Emily Taylor",
+          "notes": "Patient diagnosed with stage 3 lung cancer. Recommended chemotherapy and radiation therapy.",
+          "treatment": "Chemotherapy, radiation therapy",
+          "followUpDate": "2023-09-20"
+        }
+      },
+      {
+        "patientName": "Olivia Anderson",
+        "patientAge": 42,
+        "patientGender": "Female",
+        "patientEthnicity": "Asian",
+        "patientAddress": "876 Oakwood Drive, Villagetown, USA",
+        "diagnosis": {
+          "condition": "Asthma",
+          "diagnosisDate": "2023-06-20",
+          "doctorName": "Dr. William Harris",
+          "notes": "Patient experiences recurrent episodes of wheezing and shortness of breath. Diagnosed with asthma. Prescribed inhalers and provided asthma management plan.",
+          "treatment": "Inhalers, asthma management",
+          "followUpDate": "2023-09-01"
+        }
+      },
+      {
+        "patientName": "Sophia Roberts",
+        "patientAge": 35,
+        "patientGender": "Female",
+        "patientEthnicity": "Caucasian",
+        "patientAddress": "543 Willow Lane, Countyville, USA",
+        "diagnosis": {
+          "condition": "Rheumatoid Arthritis",
+          "diagnosisDate": "2023-04-18",
+          "doctorName": "Dr. Matthew Turner",
+          "notes": "Patient reports joint pain, swelling, and morning stiffness. Diagnosed with rheumatoid arthritis. Prescribed medication and referred to a rheumatologist.",
+          "treatment": "Medication, rheumatology referral",
+          "followUpDate": "2023-07-10"
+        }
+      },
+      {
+        "patientName": "Emma Taylor",
+        "patientAge": 55,
+        "patientGender": "Female",
+        "patientEthnicity": "African American",
+        "patientAddress": "765 Birch Street, Cityville, USA",
+        "diagnosis": {
+          "condition": "Chronic Kidney Disease",
+          "diagnosisDate": "2023-03-08",
+          "doctorName": "Dr. Christopher Walker",
+          "notes": "Patient presents with elevated creatinine levels and decreased kidney function. Diagnosed with chronic kidney disease. Recommended medication and dietary restrictions.",
+          "treatment": "Medication, dietary restrictions",
+          "followUpDate": "2023-06-15"
+        }
+      },
+      {
+        "patientName": "Noah Turner",
+        "patientAge": 18,
+        "patientGender": "Male",
+        "patientEthnicity": "Hispanic",
+        "patientAddress": "432 Spruce Avenue, Towndale, USA",
+        "diagnosis": {
+          "condition": "Attention Deficit Hyperactivity Disorder (ADHD)",
+          "diagnosisDate": "2023-08-10",
+          "doctorName": "Dr. Samantha Martinez",
+          "notes": "Patient exhibits symptoms of inattention and hyperactivity. Diagnosed with ADHD. Prescribed medication and recommended behavioral therapy.",
+          "treatment": "Medication, behavioral therapy",
+          "followUpDate": "2023-11-01"
+        }
+      }     
+]
+}

@@ -69,24 +69,24 @@ function Sidebar({
             );
           }
         },
-        {
-          "op":"sub_link",
-          "title":"Medical Case",
-          "path":"case",
-          "requireRole":["doctor"],
-          "to":"/case/edit/:id",
-          logo: () => {
-            return(
-              <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-              <path className={`fill-current text-slate-600 ${pathname.includes('calendar') && 'text-indigo-500'}`} d="M1 3h22v20H1z" />
-              <path
-                className={`fill-current text-slate-400 ${pathname.includes('calendar') && 'text-indigo-300'}`}
-                d="M21 3h2v4H1V3h2V1h4v2h10V1h4v2Z"
-              />
-            </svg>
-            );
-          }
-        },
+        // {
+        //   "op":"sub_link",
+        //   "title":"Medical Case",
+        //   "path":"case",
+        //   "requireRole":["doctor"],
+        //   "to":"/case/edit/:id",
+        //   logo: () => {
+        //     return(
+        //       <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+        //       <path className={`fill-current text-slate-600 ${pathname.includes('calendar') && 'text-indigo-500'}`} d="M1 3h22v20H1z" />
+        //       <path
+        //         className={`fill-current text-slate-400 ${pathname.includes('calendar') && 'text-indigo-300'}`}
+        //         d="M21 3h2v4H1V3h2V1h4v2h10V1h4v2Z"
+        //       />
+        //     </svg>
+        //     );
+        //   }
+        // },
         {
           "op":"sub_link",
           "title":"Appointment Case",
@@ -118,7 +118,7 @@ function Sidebar({
           "title":"Create Reportss",
           "path":"case",
           "requireRole":["doctor"],
-          "to":"/lab/edit",
+          "to":"/case/lab/create",
           logo: () => {
             return(
               <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
@@ -159,43 +159,43 @@ function Sidebar({
             );
           }
         },
-        {
-          "op":"sub_link",
-          "title":"Lab Reports",
-          "path":"case",
-          "requireRole":["doctor"],
-          "to":"/case/edit/:id",
-          logo: () => {
-            return(
-              <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-              <circle
-                className={`fill-current text-slate-400 ${pathname.includes('utility') && 'text-indigo-300'}`}
-                cx="18.5"
-                cy="5.5"
-                r="4.5"
-              />
-              <circle
-                className={`fill-current text-slate-600 ${pathname.includes('utility') && 'text-indigo-500'}`}
-                cx="5.5"
-                cy="5.5"
-                r="4.5"
-              />
-              <circle
-                className={`fill-current text-slate-600 ${pathname.includes('utility') && 'text-indigo-500'}`}
-                cx="18.5"
-                cy="18.5"
-                r="4.5"
-              />
-              <circle
-                className={`fill-current text-slate-400 ${pathname.includes('utility') && 'text-indigo-300'}`}
-                cx="5.5"
-                cy="18.5"
-                r="4.5"
-              />
-            </svg>  
-            );
-          }
-        },
+        // {
+        //   "op":"sub_link",
+        //   "title":"Lab Reports",
+        //   "path":"case",
+        //   "requireRole":["doctor"],
+        //   "to":"/case/edit/:id",
+        //   logo: () => {
+        //     return(
+        //       <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+        //       <circle
+        //         className={`fill-current text-slate-400 ${pathname.includes('utility') && 'text-indigo-300'}`}
+        //         cx="18.5"
+        //         cy="5.5"
+        //         r="4.5"
+        //       />
+        //       <circle
+        //         className={`fill-current text-slate-600 ${pathname.includes('utility') && 'text-indigo-500'}`}
+        //         cx="5.5"
+        //         cy="5.5"
+        //         r="4.5"
+        //       />
+        //       <circle
+        //         className={`fill-current text-slate-600 ${pathname.includes('utility') && 'text-indigo-500'}`}
+        //         cx="18.5"
+        //         cy="18.5"
+        //         r="4.5"
+        //       />
+        //       <circle
+        //         className={`fill-current text-slate-400 ${pathname.includes('utility') && 'text-indigo-300'}`}
+        //         cx="5.5"
+        //         cy="18.5"
+        //         r="4.5"
+        //       />
+        //     </svg>  
+        //     );
+        //   }
+        // },
         
       ],
       
@@ -310,24 +310,24 @@ function Sidebar({
             );
           }
         },
-        {
-          "op":"sub_link",
-          "title":"Medical Case",
-          "path":"case",
-          "requireRole":["doctor"],
-          "to":"/case/edit/:id",
-          logo: () => {
-            return(
-              <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-              <path className={`fill-current text-slate-600 ${pathname.includes('calendar') && 'text-indigo-500'}`} d="M1 3h22v20H1z" />
-              <path
-                className={`fill-current text-slate-400 ${pathname.includes('calendar') && 'text-indigo-300'}`}
-                d="M21 3h2v4H1V3h2V1h4v2h10V1h4v2Z"
-              />
-            </svg>
-            );
-          }
-        }
+        // {
+        //   "op":"sub_link",
+        //   "title":"Medical Case",
+        //   "path":"case",
+        //   "requireRole":["doctor"],
+        //   "to":"/case/edit/:id",
+        //   logo: () => {
+        //     return(
+        //       <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+        //       <path className={`fill-current text-slate-600 ${pathname.includes('calendar') && 'text-indigo-500'}`} d="M1 3h22v20H1z" />
+        //       <path
+        //         className={`fill-current text-slate-400 ${pathname.includes('calendar') && 'text-indigo-300'}`}
+        //         d="M21 3h2v4H1V3h2V1h4v2h10V1h4v2Z"
+        //       />
+        //     </svg>
+        //     );
+        //   }
+        // }
       ],
       
     },

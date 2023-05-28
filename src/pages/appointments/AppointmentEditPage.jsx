@@ -1,17 +1,44 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../../partials/Sidebar';
 import Header from '../../partials/Header';
 import DropdownClassic from './DropdownClassic';
 import axios from 'axios';
 import LoaderPage from '../../utils/LoadingPage1';
 import moment from 'moment';  
+
 function EmptyState() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { id } = useParams();
   const [appointmentData,setAppointmentData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState('pending');
+  const navigate = useNavigate();
+
+  const options = {
+    0: 'pending',
+    1: 'completed',
+    2: 'cancelled',
+    3: 'NA',
+    4: 'NA'
+  }
+
+  const handleSubmit = async() => {
+    try {
+      const alpha = await axios.post(`${process.env.API_URL}/appointment/update`,{
+        appointmentId: id,
+        status: options[status]
+      });
+
+      alert('Appointment Updated');
+      navigate('/appointments')
+      
+    } catch (error) {
+      alert(error.message);
+      console.log(error);
+    }
+  }
 
 
   React.useEffect(() => {
@@ -64,11 +91,11 @@ function EmptyState() {
               <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
 
                 {/* Add board button */}
-                <button className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+                <button onClick={(e) => {e.preventDefault(); handleSubmit(); } } className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                   <svg className="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
                     <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
                   </svg>
-                  <span className="ml-2">Add Event</span>
+                  <span className="ml-2">Update</span>
                 </button>
 
               </div>
@@ -116,7 +143,7 @@ function EmptyState() {
                     </div> */}
                     <div className="sm:w-1/3">
                       <label className="block text-sm font-medium mb-1" htmlFor="patientVpa">Change Status</label>
-                      <DropdownClassic />
+                      <DropdownClassic setStatus={setStatus} />
                     </div>
                   </div>
                 </section>

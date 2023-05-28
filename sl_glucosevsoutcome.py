@@ -6,9 +6,9 @@ from pandas import read_csv
 diabetesData = read_csv('diabetes.csv')
 
 # to show the plot between glucose, BMI, Age and Outcome
-fig=pyplot.rcParams['figure.figsize'] = [45, 30]
-sns.pairplot(data = diabetesData, vars=['Glucose'], hue = 'Outcome')
+pyplot.rcParams['figure.figsize'] = [45, 30]
+fig=sns.pairplot(data = diabetesData, vars=['Glucose'], hue = 'Outcome')
 sl.header("Relation of Diabetic condition with Glucose Level")
-sl.write("This scatterplot defines the correlation of people having/not having diabetes with their glucose level, BMI and age. From this graph we can clearly see a positive correlation between glucose level and diabetes. Here blue dots represent people who don't have diabetes and the orange dots represent the people who have diabetes.")
-sl.write(fig)
+sl.write("This graph shows the frequency distribution curve of glucose level for people who have diabetes (orange) and who don't (blue).")
+sl.pyplot(fig)
 pyplot.show()

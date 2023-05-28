@@ -126,7 +126,7 @@ import PatientProfile from "./pages/patient_profile/PatientProfile";
 SuperTokens.init({
     appInfo: {
         appName: "Hackathon",
-        apiDomain: "http://localhost:5000",
+        apiDomain: process.env.API_URL,
         websiteDomain: process.env.WEBSITE_DOMAIN,
         apiBasePath: "/auth",
         websiteBasePath: "/auth",

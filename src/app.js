@@ -14,15 +14,16 @@ supertokens.init(require("./config/supertoken"));
 app.use(express.json());
 // app.use(cors())
 const whitelist = ["http://localhost:5173, http://192.168.29.243:5173"]
-app.use(
-  cors({
-      origin: process.env.SUPERTOKENS_CONNECTION_WEBSITE_DOMAIN,
-      allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders(),"anti-csrf", "rid", "fdi-version", "authorization", "st-auth-mode", "Origin, X-Requested-With, Content-Type, Accept, Authorization"],
-      methods: ["GET", "PUT", "POST", "DELETE", "PATCH","PUT"],
-      credentials: true,
-      // origin: true,
-  })
-);
+// app.use(
+//   cors({
+//       origin: process.env.SUPERTOKENS_CONNECTION_WEBSITE_DOMAIN,
+//       allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders(),"anti-csrf", "rid", "fdi-version", "authorization", "st-auth-mode", "Origin, X-Requested-With, Content-Type, Accept, Authorization"],
+//       methods: ["GET", "PUT", "POST", "DELETE", "PATCH","PUT"],
+//       credentials: true,
+//       // origin: true,
+//   })
+// );
+app.use(cors())
 app.disable('etag');
 // This exposes all the APIs from SuperTokens to the client.
 app.use(middleware());

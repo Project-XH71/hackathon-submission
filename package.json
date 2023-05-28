@@ -2,6 +2,7 @@
   "name": "mosaic-react",
   "version": "0.1.0",
   "scripts": {
+    "cloud": "export API_URL='http://34.122.67.55:5000'  && export WEBSITE_DOMAIN='http://34.122.67.55:5173' && vite --host",
     "dev": "export API_URL='http://localhost:5000'  && export WEBSITE_DOMAIN='http://localhost:5173' && vite --host",
     "build": "vite build",
     "preview": "vite preview",

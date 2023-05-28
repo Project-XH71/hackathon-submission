@@ -16,7 +16,7 @@ app.use(express.json());
 const whitelist = ["http://localhost:5173, http://192.168.29.243:5173"]
 app.use(
   cors({
-      origin: "http://localhost:5173",
+      origin: process.env.SUPERTOKENS_CONNECTION_WEBSITE_DOMAIN,
       allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders(),"anti-csrf", "rid", "fdi-version", "authorization", "st-auth-mode", "Origin, X-Requested-With, Content-Type, Accept, Authorization"],
       methods: ["GET", "PUT", "POST", "DELETE", "PATCH","PUT"],
       credentials: true,

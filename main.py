@@ -11,7 +11,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
 import os
  
-os.environ["OPENAI_API_KEY"] = "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"
+# os.environ["OPENAI_API_KEY"] = ""
 st.set_page_config(page_title="HealthGPT", page_icon=None, layout="centered", initial_sidebar_state="auto", menu_items=None)
 # Sidebar contents
 with st.sidebar:

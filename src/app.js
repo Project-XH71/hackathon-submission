@@ -23,7 +23,9 @@ const whitelist = ["http://localhost:5173, http://192.168.29.243:5173"]
 //       // origin: true,
 //   })
 // );
-app.use(cors())
+app.use(cors({
+  credentials: true,
+}))
 app.disable('etag');
 // This exposes all the APIs from SuperTokens to the client.
 app.use(middleware());

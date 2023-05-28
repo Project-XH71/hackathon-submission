@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Async thunk for fetching user data from API
 export const fetchHospital = createAsyncThunk('hospital/fetchHospital', async (userId) => {
-  const response = await axios.get(`${config.BASE_URL}/medical-case/doctor/myhospital`);
+  const response = await axios.get(`${process.env.API_URL}/medical-case/doctor/myhospital`);
   return response.data;
 });
 

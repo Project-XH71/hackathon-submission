@@ -4,8 +4,8 @@ import axios from 'axios';
 
 // Async thunk for fetching user data from API
 export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {
-  const response = await axios.post(`${config.BASE_URL}/user/info`);
-  const response1 = await axios.get(`${config.BASE_URL}/user/getmyroles`);
+  const response = await axios.post(`${process.env.API_URL}/user/info`);
+  const response1 = await axios.get(`${process.env.API_URL}/user/getmyroles`);
   return {
     ...response.data,
     roles: response1.data.roles,
